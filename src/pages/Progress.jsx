@@ -47,7 +47,7 @@ function ExerciseTab({ sessions, setActivePage }) {
   return (
     <div className="flex flex-col gap-4">
       <div>
-        <label className="text-sm font-medium text-gray-700 block mb-1">Exercise</label>
+        <label className="text-sm font-medium text-gray-700 dark:text-gray-300 block mb-1">Exercise</label>
         <select
           value={selectedExercise}
           onChange={e => setSelectedExercise(e.target.value)}
@@ -58,7 +58,7 @@ function ExerciseTab({ sessions, setActivePage }) {
         </select>
       </div>
       <div>
-        <label className="text-sm font-medium text-gray-700 block mb-1">Metric</label>
+        <label className="text-sm font-medium text-gray-700 dark:text-gray-300 block mb-1">Metric</label>
         <div className="flex gap-2">
           {METRICS.map(m => (
             <button
@@ -241,7 +241,7 @@ function BodyWeightTab() {
       {chartData.length > 1 && (
         <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-4">
           <div className="flex items-center justify-between mb-3">
-            <p className="text-sm font-semibold text-gray-900">Weight Over Time</p>
+            <p className="text-sm font-semibold text-gray-900 dark:text-white">Weight Over Time</p>
             <span className="text-xs text-gray-400">{displayUnit}</span>
           </div>
           <svg viewBox={`-10 -5 ${chartW + 20} ${chartH + 15}`} className="w-full">
@@ -286,7 +286,7 @@ function BodyWeightTab() {
               <div key={e.id} className="flex items-center justify-between py-2">
                 <span className="text-xs text-gray-500 dark:text-gray-400">{formatDate(e.date)}</span>
                 <div className="flex items-center gap-3">
-                  <span className="text-sm font-semibold text-gray-900">
+                  <span className="text-sm font-semibold text-gray-900 dark:text-white">
                     {displayWeight(e.weight)} <span className="text-xs font-normal text-gray-400">{displayUnit}</span>
                   </span>
                   <button onClick={() => deleteEntry(e.id)} className="text-gray-300 hover:text-red-400 transition-colors">
@@ -320,23 +320,6 @@ export function Progress() {
   const { sessions, setActivePage } = useApp()
   const [tab, setTab] = useState('exercise')
 
-  if (sessions.length === 0 && tab !== 'weight') {
-    return (
-      <div className="flex flex-col h-full">
-        <PageHeader title="Progress" />
-        <div className="flex-1 overflow-y-auto">
-          <EmptyState
-            icon="📈"
-            title="No data yet"
-            description="Log some workouts to track your progress over time"
-            action="Log Workout"
-            onAction={() => setActivePage('log')}
-          />
-        </div>
-      </div>
-    )
-  }
-
   return (
     <div className="flex flex-col h-full">
       <PageHeader title="Progress" />
@@ -347,15 +330,23 @@ export function Progress() {
             <button
               key={t.id}
               onClick={() => setTab(t.id)}
-              className={`flex-1 py-1.5 rounded-lg text-xs font-semibold transition-colors ${tab === t.id ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-white shadow-sm' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'}`}
+              className={`flex-1 py-1.5 rounded-lg text-xs font-semibold transition-colors ${tab === t.id ? 'bg-white dark:bg-gray-800 text-gray-900 dark:text-white shadow-sm' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200'}`}
             >
               {t.label}
             </button>
           ))}
         </div>
 
-        {tab === 'exercise' && <ExerciseTab sessions={sessions} setActivePage={setActivePage} />}
-        {tab === 'records' && <RecordsTab sessions={sessions} />}
+        {tab === 'exercise' && (
+          sessions.length === 0
+            ? <EmptyState icon="📈" title="No data yet" description="Log some workouts to track your progress over time" action="Log Workout" onAction={() => setActivePage('log')} />
+            : <ExerciseTab sessions={sessions} setActivePage={setActivePage} />
+        )}
+        {tab === 'records' && (
+          sessions.length === 0
+            ? <EmptyState icon="🏆" title="No records yet" description="Log some workouts to see your personal records" action="Log Workout" onAction={() => setActivePage('log')} />
+            : <RecordsTab sessions={sessions} />
+        )}
         {tab === 'weight' && <BodyWeightTab />}
       </div>
     </div>

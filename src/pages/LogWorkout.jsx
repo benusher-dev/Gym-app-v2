@@ -711,7 +711,7 @@ export function LogWorkout() {
   function handleAddExercise(exercise) {
     setLogExercises(prev => [...prev, {
       id: generateId(),
-      exerciseId: generateId(),
+      exerciseId: exercise.id ?? generateId(),
       name: exercise.name,
       notes: exercise.notes ?? null,
       exerciseType: exercise.category === 'cardio' ? 'cardio' : 'weight',

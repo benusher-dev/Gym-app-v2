@@ -396,7 +396,7 @@ export function Dashboard() {
                 { value: stats.total, label: 'Total' },
                 { value: stats.weekSessions, label: 'This week' },
                 { value: stats.monthDays, label: 'Days / mo' },
-                { value: streak, label: streak === 1 ? 'Day streak' : 'Day streak', suffix: streak > 0 ? '🔥' : '' },
+                { value: streak, label: 'Day streak', suffix: streak > 0 ? '🔥' : '' },
               ].map(({ value, label, suffix }) => (
                 <div key={label} className="bg-white dark:bg-gray-800 rounded-2xl p-3 shadow-sm border border-gray-100 dark:border-gray-700 text-center">
                   <p className="text-xl font-bold text-indigo-600 dark:text-indigo-400">

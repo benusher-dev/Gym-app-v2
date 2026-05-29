@@ -1,3 +1,4 @@
+import { useMemo } from 'react'
 import { useLocalStorage } from './useLocalStorage'
 import { generateId } from '../utils/dateHelpers'
 
@@ -18,7 +19,10 @@ export function useBodyWeight() {
     setEntries(prev => prev.filter(e => e.id !== id))
   }
 
-  const sorted = [...entries].sort((a, b) => new Date(a.date) - new Date(b.date))
+  const sorted = useMemo(
+    () => [...entries].sort((a, b) => new Date(a.date) - new Date(b.date)),
+    [entries]
+  )
 
   return { entries: sorted, logWeight, deleteEntry }
 }

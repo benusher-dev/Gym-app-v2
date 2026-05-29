@@ -1,9 +1,16 @@
 import { useEffect } from 'react'
 
+let lockCount = 0
+
 export function Modal({ open, onClose, title, children, fullScreen = false }) {
   useEffect(() => {
-    if (open) document.body.style.overflow = 'hidden'
-    return () => { document.body.style.overflow = '' }
+    if (!open) return
+    lockCount++
+    document.body.style.overflow = 'hidden'
+    return () => {
+      lockCount--
+      if (lockCount === 0) document.body.style.overflow = ''
+    }
   }, [open])
 
   if (!open) return null
