@@ -9,8 +9,8 @@ export function PageHeader({ title, action, accent = false }) {
         ? 'bg-gradient-to-r from-sky-400 to-blue-500 shadow-lg shadow-sky-400/20'
         : 'bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm border-b border-gray-100 dark:border-gray-700'
     }`}>
-      <div className="flex items-center justify-between h-14 px-4 max-w-lg mx-auto">
-        <h1 className={`text-lg font-bold ${accent ? 'text-white' : 'text-gray-900 dark:text-white'}`}>{title}</h1>
+      <div className="flex items-center justify-between h-14 px-4 max-w-lg mx-auto gap-2">
+        <h1 className={`text-lg font-bold truncate min-w-0 ${accent ? 'text-white' : 'text-gray-900 dark:text-white'}`}>{title}</h1>
         <div className="flex items-center gap-2">
           {action && <div>{action}</div>}
           <button
