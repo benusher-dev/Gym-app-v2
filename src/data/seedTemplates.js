@@ -58,6 +58,9 @@ export const SEED_WARMUPS = {
     wu('u2-wu-6', 'KB Overhead Press Bottoms-Up',      10, 'bw',    'Per side'),
     wu('u2-wu-7', 'Drop & Catch Push-Up Position',      5, 'bw',    null),
   ],
+  'offszn-norwegian': [
+    wu('nw-wu-1', 'Warm-Up Cardio', 10, 'cardio', 'Easy effort — 60-65% max HR.'),
+  ],
 }
 
 const OLD_WARMUP_IDS = new Set(['l1-wu', 'u1-wu', 'sp-wu', 'l2-wu', 'u2-wu'])
@@ -200,6 +203,46 @@ export const SEED_TEMPLATES = [
       ex('u2-e1', 'Biceps',    4, 13, null, 'arms',      null, 60, 'Your choice. Optional finisher. (4 × 12–15)'),
       ex('u2-e2', 'Triceps',   4, 13, null, 'arms',      null, 60, 'Your choice. Optional finisher. (4 × 12–15)'),
       ex('u2-e3', 'LU Raises', 4, 11, null, 'shoulders', null, 60, 'Optional finisher. (4 × 10–12)'),
+    ],
+  },
+
+  // ─── Norwegian 4×4 (Thursday / any cardio day) ──────────────────────────────
+  {
+    id: 'offszn-norwegian',
+    name: 'Norwegian 4×4 — Off Szn',
+    createdAt: '2025-01-01T00:00:00.000Z',
+    updatedAt: '2025-01-01T00:00:00.000Z',
+    exercises: [
+      ...SEED_WARMUPS['offszn-norwegian'],
+
+      ex('nw-i1', 'Interval 1', 1, 4, null, null, null, 0,
+        'Progression: Wk 1-2 → 3 intervals; Wk 3-6 → 4 intervals; Wk 7-8 → 5 intervals.\n4 min @ 85-95% max HR.',
+        true, 'cardio'),
+      ex('nw-r1', 'Active Recovery 1', 1, 3, null, null, null, 0,
+        '3 min easy — 60-70% max HR.',
+        true, 'cardio'),
+
+      ex('nw-i2', 'Interval 2', 1, 4, null, null, null, 0,
+        '4 min @ 85-95% max HR.',
+        true, 'cardio'),
+      ex('nw-r2', 'Active Recovery 2', 1, 3, null, null, null, 0,
+        '3 min easy — 60-70% max HR.',
+        true, 'cardio'),
+
+      ex('nw-i3', 'Interval 3', 1, 4, null, null, null, 0,
+        '4 min @ 85-95% max HR. Wk 1-2: this is your final interval.',
+        true, 'cardio'),
+      ex('nw-r3', 'Active Recovery 3', 1, 3, null, null, null, 0,
+        '3 min easy — 60-70% max HR. Wk 1-2: skip interval 4 below.',
+        true, 'cardio'),
+
+      ex('nw-i4', 'Interval 4', 1, 4, null, null, null, 0,
+        '4 min @ 85-95% max HR. Wk 1-2: skip. Wk 5-6: push to 90-95% HR. Wk 7-8: add a 5th interval + 3 min recovery after this.',
+        true, 'cardio'),
+
+      ex('nw-cd', 'Cool-Down', 1, 8, null, null, null, 0,
+        '5-10 min easy effort — bring HR below 120 bpm.',
+        true, 'cardio'),
     ],
   },
 ]

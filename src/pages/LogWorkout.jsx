@@ -349,6 +349,99 @@ const EX_TYPES = [
   { value: 'checklist', label: 'Checklist',  sub: 'tap to complete',  icon: '✅', span: true },
 ]
 
+const NORWEGIAN_TEMPLATE_ID = 'offszn-norwegian'
+
+const NORWEGIAN_EQUIPMENT = [
+  { id: 'running',      label: 'Running',      icon: '🏃', sub: 'Track or treadmill' },
+  { id: 'assault_bike', label: 'Assault Bike', icon: '🚴', sub: 'Air bike / Echo bike' },
+  { id: 'rowing',       label: 'Rowing',       icon: '🚣', sub: 'Rowing machine' },
+  { id: 'ski_erg',      label: 'Ski Erg',      icon: '⛷️', sub: 'SkiErg machine' },
+]
+
+const NORWEGIAN_NOTES = {
+  warmup: {
+    running:      'Easy jog — 60-65% max HR. Last minute build slightly. Treadmill: 1% incline.',
+    assault_bike: 'Easy pedal ~55-65 RPM — 60-65% max HR.',
+    rowing:       'Easy row ~2:45-3:00/500m — 60-65% max HR, damper 3-5.',
+    ski_erg:      'Easy skiing, light pulls — 60-65% max HR, damper 4-6.',
+  },
+  interval: {
+    running:      '4 min @ 85-95% max HR — pace where speech is very difficult. Treadmill: 1% incline.',
+    assault_bike: '4 min @ 85-95% max HR — 80-100+ RPM, keep cadence consistent.',
+    rowing:       '4 min @ 85-95% max HR — 1:55-2:05/500m split, damper 3-5, rate 24-28 spm.',
+    ski_erg:      '4 min @ 85-95% max HR — consistent split, damper 4-6, smooth rhythm.',
+  },
+  recovery: {
+    running:      '3 min easy jog or brisk walk — 60-70% max HR.',
+    assault_bike: '3 min easy pedal ~50 RPM — keep moving, let HR drop to 60-70%.',
+    rowing:       '3 min easy row ~2:30-2:50/500m — light pressure, HR 60-70%.',
+    ski_erg:      '3 min easy skiing — light pulls, HR 60-70%.',
+  },
+  cooldown: {
+    running:      '5-10 min easy walk/jog — bring HR below 120 bpm.',
+    assault_bike: '5-10 min easy pedal — bring HR below 120 bpm.',
+    rowing:       '5-10 min easy row/paddle — bring HR below 120 bpm.',
+    ski_erg:      '5-10 min light skiing — bring HR below 120 bpm.',
+  },
+}
+
+const NORWEGIAN_PROGRESSION = 'Progression: Wk 1-2 → 3 intervals; Wk 3-6 → 4 intervals; Wk 7-8 → 5 intervals.'
+
+function applyNorwegianEquipment(exercises, equipment) {
+  return exercises.map(ex => {
+    if (ex.id === 'nw-wu-1') return { ...ex, notes: NORWEGIAN_NOTES.warmup[equipment] }
+    if (ex.id === 'nw-i1')   return { ...ex, notes: `${NORWEGIAN_PROGRESSION}\n${NORWEGIAN_NOTES.interval[equipment]}` }
+    if (ex.id === 'nw-i3')   return { ...ex, notes: `${NORWEGIAN_NOTES.interval[equipment]} Wk 1-2: this is your final interval.` }
+    if (ex.id === 'nw-i4')   return { ...ex, notes: `${NORWEGIAN_NOTES.interval[equipment]} Wk 1-2: skip. Wk 5-6: push to 90-95% HR. Wk 7-8: add a 5th interval + 3 min recovery after this.` }
+    if (ex.id?.startsWith('nw-i')) return { ...ex, notes: NORWEGIAN_NOTES.interval[equipment] }
+    if (ex.id === 'nw-r3')   return { ...ex, notes: `${NORWEGIAN_NOTES.recovery[equipment]} Wk 1-2: skip interval 4 below.` }
+    if (ex.id?.startsWith('nw-r')) return { ...ex, notes: NORWEGIAN_NOTES.recovery[equipment] }
+    if (ex.id === 'nw-cd')   return { ...ex, notes: NORWEGIAN_NOTES.cooldown[equipment] }
+    return ex
+  })
+}
+
+// ── Equipment picker (Norwegian 4×4) ──────────────────────────────────────────
+function EquipmentPickerSheet({ currentEquipment, onSelect, onClose }) {
+  return (
+    <div className="fixed inset-0 z-50 flex items-end justify-center" onClick={onClose}>
+      <div className="absolute inset-0 bg-black/40" />
+      <div
+        className="relative bg-white dark:bg-gray-800 rounded-t-3xl w-full max-w-lg"
+        style={{ paddingBottom: 'calc(1.5rem + env(safe-area-inset-bottom))' }}
+        onClick={e => e.stopPropagation()}
+      >
+        <div className="pt-3 pb-1 flex justify-center">
+          <div className="w-10 h-1 bg-gray-200 dark:bg-gray-600 rounded-full" />
+        </div>
+        <div className="px-5 pt-2 pb-4">
+          <h3 className="text-base font-bold text-gray-900 dark:text-white mb-1">Choose Equipment</h3>
+          <p className="text-xs text-gray-500 dark:text-gray-400 mb-4">Sets your target pace and HR cues for each interval</p>
+          <div className="grid grid-cols-2 gap-3">
+            {NORWEGIAN_EQUIPMENT.map(e => (
+              <button
+                key={e.id}
+                onClick={() => onSelect(e.id)}
+                className={`flex flex-col items-center gap-2 p-4 rounded-2xl border-2 transition-colors ${
+                  currentEquipment === e.id
+                    ? 'border-sky-400 bg-sky-50 dark:bg-sky-900/30'
+                    : 'border-gray-200 dark:border-gray-600 hover:border-sky-300 dark:hover:border-sky-600'
+                }`}
+              >
+                <span className="text-3xl leading-none">{e.icon}</span>
+                <div className="text-center">
+                  <p className={`text-sm font-semibold leading-tight ${currentEquipment === e.id ? 'text-sky-600 dark:text-sky-400' : 'text-gray-900 dark:text-white'}`}>{e.label}</p>
+                  <p className="text-[11px] text-gray-400 dark:text-gray-500 mt-0.5">{e.sub}</p>
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 // ── Exercise edit sheet ───────────────────────────────────────────────────────
 function ExerciseEditSheet({ ex, exIdx, logExercises, onSave, onClose }) {
   const [name, setName]           = useState(ex.name)
@@ -607,6 +700,11 @@ export function LogWorkout() {
   const [showRPE, setShowRPE] = useState(() => {
     try { return JSON.parse(localStorage.getItem('gwt_show_rpe') ?? 'false') } catch { return false }
   })
+  const [norwegianEquipment, setNorwegianEquipment] = useState(() => {
+    return localStorage.getItem('gwt_norwegian_equipment') ?? 'running'
+  })
+  const [showEquipmentPicker, setShowEquipmentPicker] = useState(false)
+  const [pendingTemplate, setPendingTemplate] = useState(null)
   const timerRef = useRef(null)
   const elapsedRef = useRef(null)
   const startedAtRef = useRef(null)
@@ -649,16 +747,36 @@ export function LogWorkout() {
   useEffect(() => { localStorage.setItem('gwt_auto_rest', JSON.stringify(autoRest)) }, [autoRest])
   useEffect(() => { localStorage.setItem('gwt_show_rpe', JSON.stringify(showRPE)) }, [showRPE])
 
-  function beginWorkout(template) {
+  function startWorkout(template, equipment) {
+    const t = equipment ? { ...template, exercises: applyNorwegianEquipment(template.exercises, equipment) } : template
     clearInterval(timerRef.current)
-    setSelectedTemplate(template)
-    setLogExercises(buildLogExercises(template))
+    setSelectedTemplate(t)
+    setLogExercises(buildLogExercises(t))
     setPrevLookup(buildPrevLookup(sessions, template.id))
     setNotes('')
     setTimer(null)
     setElapsed(0)
     setStep(2)
     startedAtRef.current = new Date().toISOString()
+  }
+
+  function beginWorkout(template) {
+    if (template.id === NORWEGIAN_TEMPLATE_ID) {
+      setPendingTemplate(template)
+      setShowEquipmentPicker(true)
+      return
+    }
+    startWorkout(template, null)
+  }
+
+  function handleEquipmentSelect(equipment) {
+    setNorwegianEquipment(equipment)
+    localStorage.setItem('gwt_norwegian_equipment', equipment)
+    setShowEquipmentPicker(false)
+    if (pendingTemplate) {
+      startWorkout(pendingTemplate, equipment)
+      setPendingTemplate(null)
+    }
   }
 
   function startTimer(timerId, seconds) {
@@ -770,19 +888,28 @@ export function LogWorkout() {
   // ── Step 1 ────────────────────────────────────────────────────────────────
   if (step === 1) {
     return (
-      <div className="flex flex-col h-full">
-        <PageHeader title="Log Workout" />
-        <div className="flex-1 overflow-y-auto px-4 py-4 max-w-lg mx-auto w-full">
-          {templates.length === 0 ? (
-            <EmptyState icon="📋" title="No templates yet" description="Create a workout template first, then log it here" action="Create Workout" onAction={() => setActivePage('workouts')} />
-          ) : (
-            <div className="flex flex-col gap-3">
-              <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">Choose a workout to log:</p>
-              {templates.map(t => <TemplateCard key={t.id} template={t} onSelect={() => beginWorkout(t)} />)}
-            </div>
-          )}
+      <>
+        <div className="flex flex-col h-full">
+          <PageHeader title="Log Workout" />
+          <div className="flex-1 overflow-y-auto px-4 py-4 max-w-lg mx-auto w-full">
+            {templates.length === 0 ? (
+              <EmptyState icon="📋" title="No templates yet" description="Create a workout template first, then log it here" action="Create Workout" onAction={() => setActivePage('workouts')} />
+            ) : (
+              <div className="flex flex-col gap-3">
+                <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">Choose a workout to log:</p>
+                {templates.map(t => <TemplateCard key={t.id} template={t} onSelect={() => beginWorkout(t)} />)}
+              </div>
+            )}
+          </div>
         </div>
-      </div>
+        {showEquipmentPicker && (
+          <EquipmentPickerSheet
+            currentEquipment={norwegianEquipment}
+            onSelect={handleEquipmentSelect}
+            onClose={() => { setShowEquipmentPicker(false); setPendingTemplate(null) }}
+          />
+        )}
+      </>
     )
   }
 
@@ -1055,6 +1182,13 @@ export function LogWorkout() {
         </div>
       </div>
 
+      {showEquipmentPicker && (
+        <EquipmentPickerSheet
+          currentEquipment={norwegianEquipment}
+          onSelect={handleEquipmentSelect}
+          onClose={() => { setShowEquipmentPicker(false); setPendingTemplate(null) }}
+        />
+      )}
       {showPlates && <PlateCalculator initialTab="plates" onClose={() => setShowPlates(false)} />}
       {show1RM && <PlateCalculator initialTab="1rm" onClose={() => setShow1RM(false)} />}
       <ExercisePicker

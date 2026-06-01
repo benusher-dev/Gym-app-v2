@@ -36,6 +36,21 @@ const OLD_WU_IDS = new Set(['l1-wu', 'u1-wu', 'sp-wu', 'l2-wu', 'u2-wu'])
   } catch {}
 })()
 
+// Add Norwegian 4×4 template to existing users who were seeded before it existed.
+;(function seedNorwegian() {
+  if (typeof localStorage === 'undefined') return
+  if (localStorage.getItem('gwt_norwegian_seeded')) return
+  try {
+    const raw = localStorage.getItem('gwt_templates')
+    const existing = raw ? JSON.parse(raw) : []
+    if (!existing.some(t => t.id === 'offszn-norwegian')) {
+      const template = SEED_TEMPLATES.find(t => t.id === 'offszn-norwegian')
+      if (template) localStorage.setItem('gwt_templates', JSON.stringify([...existing, template]))
+    }
+    localStorage.setItem('gwt_norwegian_seeded', '1')
+  } catch {}
+})()
+
 export function useTemplates() {
   const [templates, setTemplates] = useLocalStorage('gwt_templates', [])
 
