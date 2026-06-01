@@ -206,20 +206,22 @@ function RestTimerRow({ timerId, restSeconds, onChangeRest, timer, onStart, onSt
     const progress = timer.remaining / timer.total
     const circumference = 2 * Math.PI * 10
     return (
-      <div className="mt-3 flex items-center justify-between bg-indigo-50 dark:bg-indigo-900/30 border border-indigo-100 dark:border-indigo-800 rounded-xl px-3 py-2">
+      <div className="mt-3 flex items-center justify-between bg-indigo-50 dark:bg-amber-900/30 border border-indigo-100 dark:border-amber-800/60 rounded-xl px-3 py-2">
         <div className="flex items-center gap-3">
-          <svg width="28" height="28" viewBox="0 0 28 28" className="flex-shrink-0">
-            <circle cx="14" cy="14" r="10" fill="none" stroke="#e0e7ff" strokeWidth="3" />
-            <circle cx="14" cy="14" r="10" fill="none" stroke="#6366f1" strokeWidth="3"
-              strokeDasharray={circumference} strokeDashoffset={circumference * (1 - progress)}
-              strokeLinecap="round" transform="rotate(-90 14 14)" />
-          </svg>
-          <span className="text-indigo-700 dark:text-indigo-300 font-bold text-xl tabular-nums leading-none">
+          <div className="flex-shrink-0 text-indigo-500 dark:text-amber-500">
+            <svg width="28" height="28" viewBox="0 0 28 28">
+              <circle cx="14" cy="14" r="10" fill="none" strokeWidth="3" className="stroke-indigo-100 dark:stroke-amber-900" />
+              <circle cx="14" cy="14" r="10" fill="none" stroke="currentColor" strokeWidth="3"
+                strokeDasharray={circumference} strokeDashoffset={circumference * (1 - progress)}
+                strokeLinecap="round" transform="rotate(-90 14 14)" />
+            </svg>
+          </div>
+          <span className="text-indigo-700 dark:text-amber-300 font-bold text-xl tabular-nums leading-none">
             {formatCountdown(timer.remaining)}
           </span>
-          <span className="text-indigo-400 text-xs">rest</span>
+          <span className="text-indigo-400 dark:text-amber-500 text-xs">rest</span>
         </div>
-        <button onClick={onStop} className="text-xs text-indigo-500 font-semibold hover:text-indigo-700 px-2 py-1 rounded-lg hover:bg-indigo-100 dark:hover:bg-indigo-800 transition-colors">
+        <button onClick={onStop} className="text-xs text-indigo-500 dark:text-amber-400 font-semibold hover:text-indigo-700 dark:hover:text-amber-300 px-2 py-1 rounded-lg hover:bg-indigo-100 dark:hover:bg-amber-900/50 transition-colors">
           Skip
         </button>
       </div>
@@ -250,7 +252,7 @@ function RestTimerRow({ timerId, restSeconds, onChangeRest, timer, onStart, onSt
             onClick={() => onChangeRest(timerId, p.seconds)}
             className={`flex-shrink-0 px-2 py-1 rounded-lg text-xs font-semibold transition-colors ${
               restSeconds === p.seconds
-                ? 'bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300'
+                ? 'bg-indigo-100 dark:bg-amber-900/50 text-indigo-700 dark:text-amber-300'
                 : 'bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600'
             }`}
           >
@@ -258,7 +260,7 @@ function RestTimerRow({ timerId, restSeconds, onChangeRest, timer, onStart, onSt
           </button>
         ))}
       </div>
-      <button onClick={() => onStart(timerId, restSeconds)} className="flex-shrink-0 px-3 py-1.5 text-xs font-semibold text-white bg-indigo-500 hover:bg-indigo-600 rounded-lg transition-colors">
+      <button onClick={() => onStart(timerId, restSeconds)} className="flex-shrink-0 px-3 py-1.5 text-xs font-semibold text-white bg-indigo-500 dark:bg-amber-600 hover:bg-indigo-600 dark:hover:bg-amber-700 rounded-lg transition-colors">
         Start
       </button>
     </div>
@@ -471,7 +473,7 @@ function ExerciseEditSheet({ ex, exIdx, logExercises, onSave, onClose }) {
     onClose()
   }
 
-  const inputCls = 'w-full rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 dark:text-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400'
+  const inputCls = 'w-full rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 dark:text-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400 dark:focus:ring-amber-500'
 
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center" onClick={onClose}>
@@ -508,13 +510,13 @@ function ExerciseEditSheet({ ex, exIdx, logExercises, onSave, onClose }) {
                   onClick={() => setExType(t.value)}
                   className={`flex items-center gap-2.5 px-3 py-2.5 rounded-xl border text-left transition-colors ${t.span ? 'col-span-2' : ''} ${
                     exType === t.value
-                      ? 'border-sky-400 bg-sky-50 dark:bg-sky-900/30'
+                      ? 'border-sky-400 dark:border-amber-500 bg-sky-50 dark:bg-amber-900/30'
                       : 'border-gray-200 dark:border-gray-600 hover:border-gray-300 dark:hover:border-gray-500'
                   }`}
                 >
                   <span className="text-lg leading-none">{t.icon}</span>
                   <div>
-                    <p className={`text-sm font-semibold leading-tight ${exType === t.value ? 'text-sky-600 dark:text-sky-400' : 'text-gray-700 dark:text-gray-300'}`}>{t.label}</p>
+                    <p className={`text-sm font-semibold leading-tight ${exType === t.value ? 'text-sky-600 dark:text-amber-400' : 'text-gray-700 dark:text-gray-300'}`}>{t.label}</p>
                     <p className="text-[10px] text-gray-400 dark:text-gray-500 mt-0.5">{t.sub}</p>
                   </div>
                 </button>
@@ -600,7 +602,7 @@ function ExerciseEditSheet({ ex, exIdx, logExercises, onSave, onClose }) {
             <button onClick={onClose} className="flex-1 py-2.5 rounded-xl border border-gray-200 dark:border-gray-600 text-sm font-medium text-gray-700 dark:text-gray-300">
               Cancel
             </button>
-            <button onClick={handleSave} className="flex-1 py-2.5 rounded-xl bg-sky-500 text-white text-sm font-semibold hover:bg-sky-600 transition-colors">
+            <button onClick={handleSave} className="flex-1 py-2.5 rounded-xl bg-sky-500 dark:bg-amber-600 text-white text-sm font-semibold hover:bg-sky-600 dark:hover:bg-amber-700 transition-colors">
               Save
             </button>
           </div>
@@ -653,7 +655,7 @@ function SettingsSheet({ autoRest, showRPE, onToggleAutoRest, onToggleRPE, weekN
               </div>
               <button
                 onClick={onToggleAutoRest}
-                className={`relative flex-shrink-0 inline-flex h-6 w-11 items-center rounded-full transition-colors ${autoRest ? 'bg-indigo-600' : 'bg-gray-200 dark:bg-gray-600'}`}
+                className={`relative flex-shrink-0 inline-flex h-6 w-11 items-center rounded-full transition-colors ${autoRest ? 'bg-indigo-600 dark:bg-amber-600' : 'bg-gray-200 dark:bg-gray-600'}`}
               >
                 <span className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform ${autoRest ? 'translate-x-6' : 'translate-x-1'}`} />
               </button>
@@ -665,7 +667,7 @@ function SettingsSheet({ autoRest, showRPE, onToggleAutoRest, onToggleRPE, weekN
               </div>
               <button
                 onClick={onToggleRPE}
-                className={`relative flex-shrink-0 inline-flex h-6 w-11 items-center rounded-full transition-colors ${showRPE ? 'bg-indigo-600' : 'bg-gray-200 dark:bg-gray-600'}`}
+                className={`relative flex-shrink-0 inline-flex h-6 w-11 items-center rounded-full transition-colors ${showRPE ? 'bg-indigo-600 dark:bg-amber-600' : 'bg-gray-200 dark:bg-gray-600'}`}
               >
                 <span className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform ${showRPE ? 'translate-x-6' : 'translate-x-1'}`} />
               </button>
@@ -940,7 +942,7 @@ export function LogWorkout() {
       <div className="flex flex-col h-full">
         {/* ── Rest timer banner ── */}
         {timer && !timer.done && (
-          <div className="flex-shrink-0 bg-gradient-to-r from-sky-400 to-blue-500 px-5 pt-4 pb-5 flex items-center">
+          <div className="flex-shrink-0 bg-gradient-to-r from-sky-400 to-blue-500 dark:from-amber-600 dark:to-orange-700 px-5 pt-4 pb-5 flex items-center">
             <div className="flex-1" />
             <div className="text-center">
               <p className="text-xs font-bold text-white/70 uppercase tracking-[0.2em] mb-1">Rest</p>
@@ -1169,7 +1171,7 @@ export function LogWorkout() {
 
             <button
               onClick={() => setShowAddExercise(true)}
-              className="w-full flex items-center justify-center gap-2 py-3 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-2xl text-sm font-semibold text-gray-500 dark:text-gray-400 hover:border-indigo-400 hover:text-indigo-600 dark:hover:text-indigo-400 dark:hover:border-indigo-500 transition-colors"
+              className="w-full flex items-center justify-center gap-2 py-3 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-2xl text-sm font-semibold text-gray-500 dark:text-gray-400 hover:border-indigo-400 dark:hover:border-amber-500 hover:text-indigo-600 dark:hover:text-amber-500 transition-colors"
             >
               <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                 <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
