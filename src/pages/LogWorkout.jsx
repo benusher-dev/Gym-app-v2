@@ -710,6 +710,17 @@ export function LogWorkout() {
   const timerRef = useRef(null)
   const elapsedRef = useRef(null)
   const startedAtRef = useRef(null)
+  const wakeLockRef = useRef(null)
+
+  async function acquireWakeLock() {
+    if (!('wakeLock' in navigator)) return
+    try { wakeLockRef.current = await navigator.wakeLock.request('screen') } catch {}
+  }
+
+  function releaseWakeLock() {
+    wakeLockRef.current?.release().catch(() => {})
+    wakeLockRef.current = null
+  }
 
   const exerciseGroups = useMemo(() => {
     const groups = []; const ssMap = {}
@@ -756,7 +767,8 @@ export function LogWorkout() {
       setTimer(prev => {
         if (!prev || prev.done || !prev.startedAt) return prev
         const remaining = Math.max(0, Math.ceil((prev.totalMs - (Date.now() - prev.startedAt)) / 1000))
-        if (remaining <= 0) { clearInterval(timerRef.current); playBeep(); return { ...prev, remaining: 0, done: true } }
+        if (remaining <= 0) { clearInterval(timerRef.current); releaseWakeLock(); playBeep(); return { ...prev, remaining: 0, done: true } }
+        acquireWakeLock() // re-acquire — OS releases it on screen lock
         return { ...prev, remaining }
       })
     }
@@ -801,17 +813,18 @@ export function LogWorkout() {
     const startedAt = Date.now()
     const totalMs = seconds * 1000
     setTimer({ timerId, remaining: seconds, total: seconds, done: false, startedAt, totalMs })
+    acquireWakeLock()
     timerRef.current = setInterval(() => {
       setTimer(prev => {
         if (!prev) return null
         const remaining = Math.max(0, Math.ceil((prev.totalMs - (Date.now() - prev.startedAt)) / 1000))
-        if (remaining <= 0) { clearInterval(timerRef.current); playBeep(); return { ...prev, remaining: 0, done: true } }
+        if (remaining <= 0) { clearInterval(timerRef.current); releaseWakeLock(); playBeep(); return { ...prev, remaining: 0, done: true } }
         return { ...prev, remaining }
       })
     }, 500)
   }
 
-  function stopTimer() { clearInterval(timerRef.current); setTimer(null) }
+  function stopTimer() { clearInterval(timerRef.current); releaseWakeLock(); setTimer(null) }
 
   function updateRestSeconds(timerId, seconds) {
     setLogExercises(prev => {
