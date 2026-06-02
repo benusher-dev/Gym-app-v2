@@ -749,6 +749,21 @@ export function LogWorkout() {
   useEffect(() => { localStorage.setItem('gwt_auto_rest', JSON.stringify(autoRest)) }, [autoRest])
   useEffect(() => { localStorage.setItem('gwt_show_rpe', JSON.stringify(showRPE)) }, [showRPE])
 
+  // Snap timer to correct value when returning from background / screen lock
+  useEffect(() => {
+    function onVisible() {
+      if (document.visibilityState !== 'visible') return
+      setTimer(prev => {
+        if (!prev || prev.done || !prev.startedAt) return prev
+        const remaining = Math.max(0, Math.ceil((prev.totalMs - (Date.now() - prev.startedAt)) / 1000))
+        if (remaining <= 0) { clearInterval(timerRef.current); playBeep(); return { ...prev, remaining: 0, done: true } }
+        return { ...prev, remaining }
+      })
+    }
+    document.addEventListener('visibilitychange', onVisible)
+    return () => document.removeEventListener('visibilitychange', onVisible)
+  }, [])
+
   function startWorkout(template, equipment) {
     const t = equipment ? { ...template, exercises: applyNorwegianEquipment(template.exercises, equipment) } : template
     clearInterval(timerRef.current)
@@ -783,14 +798,17 @@ export function LogWorkout() {
 
   function startTimer(timerId, seconds) {
     clearInterval(timerRef.current)
-    setTimer({ timerId, remaining: seconds, total: seconds, done: false })
+    const startedAt = Date.now()
+    const totalMs = seconds * 1000
+    setTimer({ timerId, remaining: seconds, total: seconds, done: false, startedAt, totalMs })
     timerRef.current = setInterval(() => {
       setTimer(prev => {
         if (!prev) return null
-        if (prev.remaining <= 1) { clearInterval(timerRef.current); playBeep(); return { ...prev, remaining: 0, done: true } }
-        return { ...prev, remaining: prev.remaining - 1 }
+        const remaining = Math.max(0, Math.ceil((prev.totalMs - (Date.now() - prev.startedAt)) / 1000))
+        if (remaining <= 0) { clearInterval(timerRef.current); playBeep(); return { ...prev, remaining: 0, done: true } }
+        return { ...prev, remaining }
       })
-    }, 1000)
+    }, 500)
   }
 
   function stopTimer() { clearInterval(timerRef.current); setTimer(null) }
@@ -966,22 +984,17 @@ export function LogWorkout() {
             </div>
           </div>
         )}
-        <PageHeader
-          title={selectedTemplate.name}
-          accent
-          action={
-            <div className="flex items-center gap-1.5">
-              <span className={`text-xs font-semibold px-2 py-1 rounded-lg ${getWeek(selectedTemplate.id) >= 8 ? 'bg-amber-400/90 text-white' : 'text-white/80 bg-white/20'}`}>
+        <header className="sticky top-0 z-30 flex-shrink-0 bg-gradient-to-r from-sky-400 to-blue-500 dark:from-amber-600 dark:to-orange-700 shadow-lg shadow-sky-400/20 dark:shadow-amber-700/20">
+          <div className="px-4 pt-2.5 pb-2 max-w-lg mx-auto">
+            <h1 className="text-base font-bold text-white text-center truncate mb-2">{selectedTemplate.name}</h1>
+            <div className="flex items-center justify-between gap-1">
+              <span className={`text-xs font-semibold px-2.5 py-1.5 rounded-xl ${getWeek(selectedTemplate.id) >= 8 ? 'bg-amber-400/90 text-white' : 'bg-white/20 text-white'}`}>
                 {getWeek(selectedTemplate.id) >= 8 ? '🏁 Wk 8' : `Wk ${getWeek(selectedTemplate.id)}`}
               </span>
-              <span className="text-xs font-mono font-semibold text-white/90 tabular-nums bg-white/20 px-2 py-1 rounded-lg">
+              <span className="text-xs font-mono font-semibold text-white tabular-nums bg-white/20 px-2.5 py-1.5 rounded-xl">
                 {formatElapsed(elapsed)}
               </span>
-              <button
-                onClick={() => setShowPlates(true)}
-                className="p-1.5 rounded-xl text-white/70 hover:text-white hover:bg-white/20 transition-colors"
-                title="Plate Calculator"
-              >
+              <button onClick={() => setShowPlates(true)} className="p-1.5 rounded-xl bg-white/15 text-white/90 hover:bg-white/25 transition-colors" title="Plate Calculator">
                 <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75">
                   <rect x="4" y="2" width="16" height="20" rx="2" />
                   <line x1="8" y1="7" x2="16" y2="7" />
@@ -993,25 +1006,16 @@ export function LogWorkout() {
                   <line x1="16" y1="17" x2="16" y2="17" strokeLinecap="round" strokeWidth="3" />
                 </svg>
               </button>
-              <button
-                onClick={() => setShow1RM(true)}
-                className="p-1.5 rounded-xl text-white/70 hover:text-amber-200 hover:bg-white/20 transition-colors"
-                title="1RM Estimator"
-              >
+              <button onClick={() => setShow1RM(true)} className="p-1.5 rounded-xl bg-white/15 text-white/90 hover:bg-white/25 transition-colors" title="1RM Estimator">
                 <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" />
-                  <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" />
+                  <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" /><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" />
                   <path d="M4 22h16" />
                   <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22" />
                   <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22" />
                   <path d="M18 2H6v7a6 6 0 0 0 12 0V2z" />
                 </svg>
               </button>
-              <button
-                onClick={() => setShowSettings(true)}
-                className="p-1.5 rounded-xl text-white/70 hover:text-white hover:bg-white/20 transition-colors"
-                title="Workout Settings"
-              >
+              <button onClick={() => setShowSettings(true)} className="p-1.5 rounded-xl bg-white/15 text-white/90 hover:bg-white/25 transition-colors" title="Workout Settings">
                 <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <line x1="4" y1="21" x2="4" y2="14" /><line x1="4" y1="10" x2="4" y2="3" />
                   <line x1="12" y1="21" x2="12" y2="12" /><line x1="12" y1="8" x2="12" y2="3" />
@@ -1019,12 +1023,12 @@ export function LogWorkout() {
                   <line x1="1" y1="14" x2="7" y2="14" /><line x1="9" y1="8" x2="15" y2="8" /><line x1="17" y1="16" x2="23" y2="16" />
                 </svg>
               </button>
-              <button onClick={handleCancel} className="text-sm text-white/70 hover:text-white font-medium transition-colors">
+              <button onClick={handleCancel} className="text-xs font-semibold text-white bg-white/15 hover:bg-white/25 px-2.5 py-1.5 rounded-xl transition-colors">
                 Cancel
               </button>
             </div>
-          }
-        />
+          </div>
+        </header>
         <div className="flex-1 overflow-y-auto px-4 py-4 max-w-lg mx-auto w-full">
           <div className="flex flex-col gap-4 pb-6">
             {hasPrev && (
