@@ -51,14 +51,17 @@ function buildLogExercises(template) {
   }))
 }
 
-function buildPrevLookup(sessions, templateId) {
-  const prev = sessions
-    .filter(s => s.templateId === templateId)
-    .sort((a, b) => new Date(b.date) - new Date(a.date))[0]
-  if (!prev) return {}
+function buildSessionLookup(session) {
+  if (!session) return {}
   const lookup = {}
-  prev.exercises.forEach(ex => { lookup[ex.name] = ex.sets })
+  session.exercises.forEach(ex => { lookup[ex.name] = ex.sets })
   return lookup
+}
+
+function getTemplateSessions(sessions, templateId) {
+  return sessions
+    .filter(s => s.templateId === templateId)
+    .sort((a, b) => new Date(b.date) - new Date(a.date))
 }
 
 function formatCountdown(s) {
@@ -679,6 +682,52 @@ function SettingsSheet({ autoRest, showRPE, onToggleAutoRest, onToggleRPE, weekN
   )
 }
 
+// ── Session nav badge (swipe to browse past sessions) ─────────────────────────
+function SessionNavBadge({ templateSessions, refIdx, weekNum, onNav }) {
+  const swipeStartX = useRef(null)
+
+  function onTouchStart(e) { swipeStartX.current = e.touches[0].clientX }
+  function onTouchEnd(e) {
+    if (swipeStartX.current === null) return
+    const dx = e.changedTouches[0].clientX - swipeStartX.current
+    swipeStartX.current = null
+    if (Math.abs(dx) < 28) return
+    onNav(dx < 0 ? 1 : -1) // swipe left → older (higher idx), swipe right → newer
+  }
+
+  const hasSessions = templateSessions.length > 0
+  const canOlder = refIdx < templateSessions.length - 1
+  const canNewer = refIdx > 0
+  const session  = templateSessions[refIdx]
+  const isBrowsing = refIdx > 0
+  const wkLabel  = weekNum >= 8 ? '🏁 Wk 8' : `Wk ${weekNum}`
+  const dateLabel = session
+    ? new Date(session.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })
+    : null
+
+  if (!hasSessions) {
+    return (
+      <span className={`text-xs font-semibold px-2.5 py-1.5 rounded-xl ${weekNum >= 8 ? 'bg-amber-400/90 text-white' : 'bg-white/20 text-white'}`}>
+        {wkLabel}
+      </span>
+    )
+  }
+
+  return (
+    <div
+      className={`flex items-center gap-0.5 rounded-xl px-1.5 py-1.5 select-none touch-none transition-colors ${isBrowsing ? 'bg-white/30' : 'bg-white/20'}`}
+      onTouchStart={onTouchStart}
+      onTouchEnd={onTouchEnd}
+    >
+      <button onClick={() => canNewer && onNav(-1)} className={`px-0.5 text-sm font-bold leading-none transition-opacity ${canNewer ? 'text-white' : 'text-white/20'}`}>‹</button>
+      <span className="text-xs font-semibold text-white min-w-[52px] text-center leading-none px-0.5">
+        {isBrowsing ? dateLabel : wkLabel}
+      </span>
+      <button onClick={() => canOlder && onNav(1)} className={`px-0.5 text-sm font-bold leading-none transition-opacity ${canOlder ? 'text-white' : 'text-white/20'}`}>›</button>
+    </div>
+  )
+}
+
 // ── Main component ─────────────────────────────────────────────────────────────
 export function LogWorkout() {
   const { templates, sessions, logTemplateId, setLogTemplateId, addSession, setActivePage, updateTemplate } = useApp()
@@ -686,7 +735,9 @@ export function LogWorkout() {
   const [step, setStep] = useState(1)
   const [selectedTemplate, setSelectedTemplate] = useState(null)
   const [logExercises, setLogExercises] = useState([])
-  const [prevLookup, setPrevLookup] = useState({})
+  const [templateSessions, setTemplateSessions] = useState([])
+  const [refSessionIdx, setRefSessionIdx] = useState(0)
+  const prevLookup = useMemo(() => buildSessionLookup(templateSessions[refSessionIdx]), [templateSessions, refSessionIdx])
   const [notes, setNotes] = useState('')
   const [summaryData, setSummaryData] = useState(null)
   const [timer, setTimer] = useState(null)
@@ -781,7 +832,8 @@ export function LogWorkout() {
     clearInterval(timerRef.current)
     setSelectedTemplate(t)
     setLogExercises(buildLogExercises(t))
-    setPrevLookup(buildPrevLookup(sessions, template.id))
+    setTemplateSessions(getTemplateSessions(sessions, template.id))
+    setRefSessionIdx(0)
     setNotes('')
     setTimer(null)
     setElapsed(0)
@@ -909,8 +961,8 @@ export function LogWorkout() {
   }
 
   function handleCancel() {
-    clearInterval(timerRef.current); setTimer(null); setStep(1); setElapsed(0)
-    setSelectedTemplate(null); setLogExercises([]); setNotes(''); startedAtRef.current = null
+    clearInterval(timerRef.current); releaseWakeLock(); setTimer(null); setStep(1); setElapsed(0)
+    setSelectedTemplate(null); setLogExercises([]); setNotes(''); setTemplateSessions([]); setRefSessionIdx(0); startedAtRef.current = null
   }
 
   function handleSummaryDone() {
@@ -1001,9 +1053,12 @@ export function LogWorkout() {
           <div className="px-4 pt-2.5 pb-2 max-w-lg mx-auto">
             <h1 className="text-base font-bold text-white text-center truncate mb-2">{selectedTemplate.name}</h1>
             <div className="flex items-center justify-between gap-1">
-              <span className={`text-xs font-semibold px-2.5 py-1.5 rounded-xl ${getWeek(selectedTemplate.id) >= 8 ? 'bg-amber-400/90 text-white' : 'bg-white/20 text-white'}`}>
-                {getWeek(selectedTemplate.id) >= 8 ? '🏁 Wk 8' : `Wk ${getWeek(selectedTemplate.id)}`}
-              </span>
+              <SessionNavBadge
+                templateSessions={templateSessions}
+                refIdx={refSessionIdx}
+                weekNum={getWeek(selectedTemplate.id)}
+                onNav={delta => setRefSessionIdx(i => Math.max(0, Math.min(templateSessions.length - 1, i + delta)))}
+              />
               <span className="text-xs font-mono font-semibold text-white tabular-nums bg-white/20 px-2.5 py-1.5 rounded-xl">
                 {formatElapsed(elapsed)}
               </span>
@@ -1046,8 +1101,11 @@ export function LogWorkout() {
           <div className="flex flex-col gap-4 pb-6">
             {hasPrev && (
               <div className="flex items-center gap-1.5 px-3 py-2 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700">
-                <svg className="h-3.5 w-3.5 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg>
-                <p className="text-xs text-gray-400 dark:text-gray-500">Small numbers show your last session's values</p>
+                <svg className="h-3.5 w-3.5 text-gray-400 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg>
+                {refSessionIdx === 0
+                  ? <p className="text-xs text-gray-400 dark:text-gray-500">Small numbers show your last session — swipe <strong className="font-semibold">Wk</strong> to browse history</p>
+                  : <p className="text-xs text-gray-400 dark:text-gray-500">Showing <span className="font-semibold text-gray-600 dark:text-gray-300">{new Date(templateSessions[refSessionIdx]?.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</span> — swipe to navigate</p>
+                }
               </div>
             )}
 
