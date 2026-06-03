@@ -3,7 +3,7 @@ import { useApp } from '../store/AppContext'
 import { PageHeader } from '../components/layout/PageHeader'
 import { Button } from '../components/ui/Button'
 import { SessionCard } from '../components/sessions/SessionCard'
-import { useSchedule, SCHEDULE_DAYS, DAY_LABELS, DAY_FULL, todayKey } from '../hooks/useSchedule'
+import { useSchedule, SCHEDULE_DAYS, DAY_LABELS, DAY_FULL, todayKey, normaliseDayTemplates } from '../hooks/useSchedule'
 import { useBodyWeight } from '../hooks/useBodyWeight'
 
 // ── Streak helpers ───────────────────────────────────────────────────────────
@@ -59,6 +59,15 @@ function importData(file, onDone) {
 
 // ── Day assign sheet ─────────────────────────────────────────────────────────
 function AssignSheet({ day, templates, current, onAssign, onClose }) {
+  const [selected, setSelected] = useState(current) // current is always an array
+
+  function toggle(id) {
+    setSelected(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id])
+  }
+
+  function handleDone() { onAssign(selected); onClose() }
+  function handleRest() { onAssign([]); onClose() }
+
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center" onClick={onClose}>
       <div className="absolute inset-0 bg-black/40" />
@@ -69,36 +78,44 @@ function AssignSheet({ day, templates, current, onAssign, onClose }) {
       >
         <div className="px-5 pt-4 pb-3 border-b border-gray-100 dark:border-gray-700">
           <div className="w-10 h-1 bg-gray-200 dark:bg-gray-600 rounded-full mx-auto mb-3" />
-          <h3 className="text-base font-bold text-gray-900 dark:text-white">{DAY_FULL[day]}</h3>
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Choose a workout to schedule</p>
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-base font-bold text-gray-900 dark:text-white">{DAY_FULL[day]}</h3>
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Tap to select — stack multiple workouts</p>
+            </div>
+            <button onClick={handleDone} className="px-4 py-1.5 bg-indigo-600 dark:bg-amber-600 text-white text-sm font-semibold rounded-xl">Done</button>
+          </div>
         </div>
         <div className="overflow-y-auto max-h-96">
           <button
-            onClick={() => { onAssign(null); onClose() }}
-            className={`w-full text-left px-5 py-3 flex items-center gap-3 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors ${!current ? 'text-indigo-600 dark:text-amber-500' : 'text-gray-500 dark:text-gray-400'}`}
+            onClick={handleRest}
+            className={`w-full text-left px-5 py-3 flex items-center gap-3 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors ${!selected.length ? 'text-indigo-600 dark:text-amber-500' : 'text-gray-500 dark:text-gray-400'}`}
           >
             <div className="w-8 h-8 rounded-xl bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-sm">😴</div>
             <span className="text-sm font-medium dark:text-gray-200">Rest Day</span>
-            {!current && <svg className="h-4 w-4 ml-auto text-indigo-500 dark:text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12" /></svg>}
+            {!selected.length && <svg className="h-4 w-4 ml-auto text-indigo-500 dark:text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12" /></svg>}
           </button>
-          {templates.map(t => (
-            <button
-              key={t.id}
-              onClick={() => { onAssign(t.id); onClose() }}
-              className={`w-full text-left px-5 py-3 flex items-center gap-3 hover:bg-indigo-50 dark:hover:bg-amber-900/30 transition-colors ${current === t.id ? 'text-indigo-600 dark:text-amber-500' : 'text-gray-800 dark:text-gray-200'}`}
-            >
-              <div className="w-8 h-8 rounded-xl bg-indigo-100 dark:bg-amber-900/40 flex items-center justify-center">
-                <svg className="h-4 w-4 text-indigo-600 dark:text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M18 8h1a4 4 0 010 8h-1M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8zM6 1v3M10 1v3M14 1v3" />
-                </svg>
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium truncate">{t.name}</p>
-                <p className="text-xs text-gray-400">{t.exercises.length} exercise{t.exercises.length !== 1 ? 's' : ''}</p>
-              </div>
-              {current === t.id && <svg className="h-4 w-4 text-indigo-500 dark:text-amber-400 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12" /></svg>}
-            </button>
-          ))}
+          {templates.map(t => {
+            const isSelected = selected.includes(t.id)
+            return (
+              <button
+                key={t.id}
+                onClick={() => toggle(t.id)}
+                className={`w-full text-left px-5 py-3 flex items-center gap-3 hover:bg-indigo-50 dark:hover:bg-amber-900/30 transition-colors ${isSelected ? 'text-indigo-600 dark:text-amber-500' : 'text-gray-800 dark:text-gray-200'}`}
+              >
+                <div className={`w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 transition-colors ${isSelected ? 'bg-indigo-600 dark:bg-amber-600' : 'bg-indigo-100 dark:bg-amber-900/40'}`}>
+                  {isSelected
+                    ? <svg className="h-4 w-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12" /></svg>
+                    : <svg className="h-4 w-4 text-indigo-600 dark:text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 8h1a4 4 0 010 8h-1M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8zM6 1v3M10 1v3M14 1v3" /></svg>
+                  }
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-medium truncate">{t.name}</p>
+                  <p className="text-xs text-gray-400">{t.exercises.length} exercise{t.exercises.length !== 1 ? 's' : ''}</p>
+                </div>
+              </button>
+            )
+          })}
         </div>
       </div>
     </div>
@@ -316,7 +333,9 @@ function ScheduleStrip({ schedule, templates, today, onAssignDay }) {
       <div ref={scrollRef} className="flex gap-1.5 overflow-x-auto pb-1" style={{ scrollbarWidth: 'none' }}>
         {dates.map((date, idx) => {
           const dayKey = dateToKey(date)
-          const tmpl = templates.find(t => t.id === schedule[dayKey])
+          const dayIds = normaliseDayTemplates(schedule[dayKey])
+          const dayTmpls = dayIds.map(id => templates.find(t => t.id === id)).filter(Boolean)
+          const hasTmpls = dayTmpls.length > 0
           const isToday = dayKey === today && date.toDateString() === new Date().toDateString()
           const isPast = date < new Date(new Date().setHours(0, 0, 0, 0))
           return (
@@ -326,30 +345,37 @@ function ScheduleStrip({ schedule, templates, today, onAssignDay }) {
               onClick={() => onAssignDay(dayKey)}
               className={`flex-shrink-0 flex flex-col items-center gap-1 py-2 px-2 rounded-xl transition-colors w-12 ${
                 isToday
-                  ? tmpl ? 'bg-indigo-600 dark:bg-amber-600 text-white' : 'bg-indigo-50 dark:bg-amber-900/30 border-2 border-indigo-300 dark:border-amber-600 text-indigo-600 dark:text-amber-400'
+                  ? hasTmpls ? 'bg-indigo-600 dark:bg-amber-600 text-white' : 'bg-indigo-50 dark:bg-amber-900/30 border-2 border-indigo-300 dark:border-amber-600 text-indigo-600 dark:text-amber-400'
                   : isPast
-                  ? 'opacity-40 ' + (tmpl ? 'bg-gray-100 dark:bg-gray-700 text-gray-500' : 'bg-gray-50 dark:bg-gray-800 text-gray-400 border border-dashed border-gray-200 dark:border-gray-600')
-                  : tmpl ? 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-indigo-50 dark:hover:bg-amber-900/30' : 'bg-gray-50 dark:bg-gray-800 text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 border border-dashed border-gray-200 dark:border-gray-600'
+                  ? 'opacity-40 ' + (hasTmpls ? 'bg-gray-100 dark:bg-gray-700 text-gray-500' : 'bg-gray-50 dark:bg-gray-800 text-gray-400 border border-dashed border-gray-200 dark:border-gray-600')
+                  : hasTmpls ? 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-indigo-50 dark:hover:bg-amber-900/30' : 'bg-gray-50 dark:bg-gray-800 text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 border border-dashed border-gray-200 dark:border-gray-600'
               }`}
             >
               <span className="text-[10px] font-bold uppercase">{DAY_LABELS[dayKey]}</span>
               <span className={`text-[10px] font-medium ${isToday ? 'text-white/70' : 'text-gray-400 dark:text-gray-500'}`}>
                 {date.getDate()}
               </span>
-              {tmpl ? (
-                <div className={`w-6 h-6 rounded-lg flex items-center justify-center ${isToday ? 'bg-white/20' : 'bg-indigo-100 dark:bg-amber-900/40'}`}>
-                  <svg className={`h-3.5 w-3.5 ${isToday ? 'text-white' : 'text-indigo-600 dark:text-amber-400'}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M18 8h1a4 4 0 010 8h-1M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8zM6 1v3M10 1v3M14 1v3" />
-                  </svg>
+              {hasTmpls ? (
+                <div className="relative w-6 h-6">
+                  <div className={`w-6 h-6 rounded-lg flex items-center justify-center ${isToday ? 'bg-white/20' : 'bg-indigo-100 dark:bg-amber-900/40'}`}>
+                    <svg className={`h-3.5 w-3.5 ${isToday ? 'text-white' : 'text-indigo-600 dark:text-amber-400'}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M18 8h1a4 4 0 010 8h-1M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8zM6 1v3M10 1v3M14 1v3" />
+                    </svg>
+                  </div>
+                  {dayTmpls.length > 1 && (
+                    <span className={`absolute -top-1 -right-1 text-[7px] font-bold w-3.5 h-3.5 rounded-full flex items-center justify-center ${isToday ? 'bg-white text-indigo-600 dark:text-amber-700' : 'bg-indigo-500 dark:bg-amber-500 text-white'}`}>
+                      {dayTmpls.length}
+                    </span>
+                  )}
                 </div>
               ) : (
                 <div className="w-6 h-6 rounded-lg flex items-center justify-center">
                   <span className="text-xs">—</span>
                 </div>
               )}
-              {tmpl && (
+              {hasTmpls && (
                 <span className={`text-[8px] font-medium leading-tight text-center w-full truncate px-0.5 ${isToday ? 'text-white/80' : 'text-gray-500 dark:text-gray-400'}`}>
-                  {tmpl.name}
+                  {dayTmpls.length > 1 ? `${dayTmpls.length} workouts` : dayTmpls[0].name}
                 </span>
               )}
             </button>
@@ -362,7 +388,7 @@ function ScheduleStrip({ schedule, templates, today, onAssignDay }) {
 
 export function Dashboard() {
   const { sessions, setActivePage, setLogTemplateId, templates } = useApp()
-  const { schedule, setDayTemplate } = useSchedule()
+  const { schedule, getDayTemplates, setDayTemplates } = useSchedule()
   const [assignDay, setAssignDay] = useState(null)
   const importRef = useRef(null)
   const today = todayKey()
@@ -383,10 +409,15 @@ export function Dashboard() {
     }
   }, [sessions])
 
-  const todayTemplate = templates.find(t => t.id === schedule[today]) ?? null
+  const todayTemplates = getDayTemplates(today).map(id => templates.find(t => t.id === id)).filter(Boolean)
+
+  function startTemplate(id) {
+    setLogTemplateId(id)
+    setActivePage('log')
+  }
 
   function startToday() {
-    if (todayTemplate) { setLogTemplateId(todayTemplate.id) }
+    if (todayTemplates.length) { setLogTemplateId(todayTemplates[0].id) }
     setActivePage('log')
   }
 
@@ -397,16 +428,35 @@ export function Dashboard() {
         <div className="flex flex-col gap-5">
 
           {/* Today hero */}
-          <div className={`rounded-2xl p-5 shadow-lg text-white ${todayTemplate ? 'bg-gradient-to-br from-indigo-600 to-indigo-700 dark:from-amber-600 dark:to-orange-700' : 'bg-gradient-to-br from-gray-700 to-gray-800'}`}>
+          <div className={`rounded-2xl p-5 shadow-lg text-white ${todayTemplates.length ? 'bg-gradient-to-br from-indigo-600 to-indigo-700 dark:from-amber-600 dark:to-orange-700' : 'bg-gradient-to-br from-gray-700 to-gray-800'}`}>
             <p className="text-xs font-semibold uppercase tracking-widest opacity-70 mb-1">Today</p>
-            {todayTemplate ? (
-              <>
-                <h2 className="text-xl font-bold mb-1">{todayTemplate.name}</h2>
-                <p className="text-sm opacity-70 mb-4">{todayTemplate.exercises.length} exercise{todayTemplate.exercises.length !== 1 ? 's' : ''}</p>
-                <Button variant="secondary" className="bg-white text-indigo-600 dark:text-amber-700 border-0 hover:bg-indigo-50" onClick={startToday}>
-                  Start Workout
-                </Button>
-              </>
+            {todayTemplates.length > 0 ? (
+              todayTemplates.length === 1 ? (
+                <>
+                  <h2 className="text-xl font-bold mb-1">{todayTemplates[0].name}</h2>
+                  <p className="text-sm opacity-70 mb-4">{todayTemplates[0].exercises.length} exercise{todayTemplates[0].exercises.length !== 1 ? 's' : ''}</p>
+                  <Button variant="secondary" className="bg-white text-indigo-600 dark:text-amber-700 border-0 hover:bg-indigo-50" onClick={startToday}>
+                    Start Workout
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <h2 className="text-xl font-bold mb-1">{todayTemplates.length} Workouts Stacked</h2>
+                  <p className="text-sm opacity-70 mb-3">Choose one to start</p>
+                  <div className="flex flex-col gap-2">
+                    {todayTemplates.map(t => (
+                      <button
+                        key={t.id}
+                        onClick={() => startTemplate(t.id)}
+                        className="w-full text-left bg-white/20 hover:bg-white/30 rounded-xl px-4 py-2.5 transition-colors"
+                      >
+                        <p className="text-sm font-semibold text-white">{t.name}</p>
+                        <p className="text-xs text-white/70">{t.exercises.length} exercise{t.exercises.length !== 1 ? 's' : ''}</p>
+                      </button>
+                    ))}
+                  </div>
+                </>
+              )
             ) : (
               <>
                 <h2 className="text-xl font-bold mb-1">Rest Day</h2>
@@ -515,8 +565,8 @@ export function Dashboard() {
         <AssignSheet
           day={assignDay}
           templates={templates}
-          current={schedule[assignDay]}
-          onAssign={id => setDayTemplate(assignDay, id)}
+          current={getDayTemplates(assignDay)}
+          onAssign={ids => setDayTemplates(assignDay, ids)}
           onClose={() => setAssignDay(null)}
         />
       )}

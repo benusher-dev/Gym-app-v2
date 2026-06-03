@@ -5,15 +5,25 @@ export const DAY_LABELS = { mon: 'Mon', tue: 'Tue', wed: 'Wed', thu: 'Thu', fri:
 export const DAY_FULL = { mon: 'Monday', tue: 'Tuesday', wed: 'Wednesday', thu: 'Thursday', fri: 'Friday', sat: 'Saturday', sun: 'Sunday' }
 
 export function todayKey() {
-  return SCHEDULE_DAYS[(new Date().getDay() + 6) % 7] // JS getDay: 0=Sun, shift so 0=Mon
+  return SCHEDULE_DAYS[(new Date().getDay() + 6) % 7]
+}
+
+// Normalize old single-value entries to arrays
+export function normaliseDayTemplates(value) {
+  if (!value) return []
+  return Array.isArray(value) ? value : [value]
 }
 
 export function useSchedule() {
   const [schedule, setSchedule] = useLocalStorage('gwt_schedule', {})
 
-  function setDayTemplate(day, templateId) {
-    setSchedule(prev => ({ ...prev, [day]: templateId ?? null }))
+  function getDayTemplates(day) {
+    return normaliseDayTemplates(schedule[day])
   }
 
-  return { schedule, setDayTemplate }
+  function setDayTemplates(day, ids) {
+    setSchedule(prev => ({ ...prev, [day]: ids.length ? ids : null }))
+  }
+
+  return { schedule, getDayTemplates, setDayTemplates }
 }
