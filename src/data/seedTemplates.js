@@ -245,4 +245,23 @@ export const SEED_TEMPLATES = [
         true, 'cardio'),
     ],
   },
+
+  // ─── Threshold Work (sustained pace conditioning) ───────────────────────────
+  {
+    id: 'threshold-work',
+    name: 'Threshold Work',
+    createdAt: '2025-01-01T00:00:00.000Z',
+    updatedAt: '2025-01-01T00:00:00.000Z',
+    exercises: [
+      wu('tw-wu-1', '5 Min Easy Warm-Up', 5, 'cardio', 'Easy jog, row, or cycle — 60-65% max HR. Build pace slightly in the final minute.'),
+
+      ex('tw-intervals', 'Threshold Intervals', 6, 5, null, null, null, 60,
+        'RPE 7–8 — strong, controlled pace. 5 min on / 1 min rest.\nHold a pace you can sustain across all rounds without significant drop-off. Each round should feel similar to the last — if pace drops >5%, end the session.\nRounds 4–8: start with 4 rounds; add 1 per week up to 8.',
+        true, 'cardio'),
+
+      ex('tw-cd', 'Cool-Down', 1, 5, null, null, null, 0,
+        '5 min easy effort — bring HR below 130 bpm.',
+        true, 'cardio'),
+    ],
+  },
 ]

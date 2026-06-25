@@ -26,6 +26,8 @@ const OLD_WU_IDS = new Set(['l1-wu', 'u1-wu', 'sp-wu', 'l2-wu', 'u2-wu'])
     const updated = templates.map(t => {
       const newWarmups = SEED_WARMUPS[t.id]
       if (!newWarmups) return t
+      // Only migrate if the old single-exercise warmup ID is present
+      if (!t.exercises.some(ex => OLD_WU_IDS.has(ex.id))) return t
       const rest = t.exercises.filter(ex => !OLD_WU_IDS.has(ex.id))
       return { ...t, exercises: [...newWarmups, ...rest] }
     })
@@ -48,6 +50,21 @@ const OLD_WU_IDS = new Set(['l1-wu', 'u1-wu', 'sp-wu', 'l2-wu', 'u2-wu'])
       if (template) localStorage.setItem('gwt_templates', JSON.stringify([...existing, template]))
     }
     localStorage.setItem('gwt_norwegian_seeded', '1')
+  } catch {}
+})()
+
+// Add Threshold Work template to existing users.
+;(function seedThresholdWork() {
+  if (typeof localStorage === 'undefined') return
+  if (localStorage.getItem('gwt_threshold_seeded')) return
+  try {
+    const raw = localStorage.getItem('gwt_templates')
+    const existing = raw ? JSON.parse(raw) : []
+    if (!existing.some(t => t.id === 'threshold-work')) {
+      const template = SEED_TEMPLATES.find(t => t.id === 'threshold-work')
+      if (template) localStorage.setItem('gwt_templates', JSON.stringify([...existing, template]))
+    }
+    localStorage.setItem('gwt_threshold_seeded', '1')
   } catch {}
 })()
 
