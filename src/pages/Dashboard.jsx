@@ -43,18 +43,130 @@ function exportData() {
   URL.revokeObjectURL(url)
 }
 
-function importData(file, onDone) {
-  const reader = new FileReader()
-  reader.onload = e => {
-    try {
-      const data = JSON.parse(e.target.result)
-      STORAGE_KEYS.forEach(k => { if (data[k] !== undefined) localStorage.setItem(k, JSON.stringify(data[k])) })
-      onDone()
-    } catch {
-      alert('Invalid backup file — could not restore data.')
+function readBackupFile(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = e => {
+      try { resolve(JSON.parse(e.target.result)) }
+      catch { reject(new Error('Invalid backup file')) }
     }
+    reader.onerror = () => reject(new Error('Could not read file'))
+    reader.readAsText(file)
+  })
+}
+
+function mergeImport(data) {
+  const getLocal = k => { try { return JSON.parse(localStorage.getItem(k) ?? 'null') } catch { return null } }
+
+  // Sessions — merge by id
+  if (Array.isArray(data.gwt_sessions)) {
+    const current = getLocal('gwt_sessions') ?? []
+    const existingIds = new Set(current.map(s => s.id))
+    const merged = [...current, ...data.gwt_sessions.filter(s => !existingIds.has(s.id))]
+    localStorage.setItem('gwt_sessions', JSON.stringify(merged))
   }
-  reader.readAsText(file)
+
+  // Body weight — merge by date string
+  if (Array.isArray(data.gwt_bodyweight)) {
+    const current = getLocal('gwt_bodyweight') ?? []
+    const existingDates = new Set(current.map(e => e.date))
+    const merged = [...current, ...data.gwt_bodyweight.filter(e => !existingDates.has(e.date))]
+    localStorage.setItem('gwt_bodyweight', JSON.stringify(merged))
+  }
+
+  // Templates — merge by id (never overwrite current templates)
+  if (Array.isArray(data.gwt_templates)) {
+    const current = getLocal('gwt_templates') ?? []
+    const existingIds = new Set(current.map(t => t.id))
+    const merged = [...current, ...data.gwt_templates.filter(t => !existingIds.has(t.id))]
+    localStorage.setItem('gwt_templates', JSON.stringify(merged))
+  }
+
+  // Custom exercises — merge by id
+  if (Array.isArray(data.gwt_custom_exercises)) {
+    const current = getLocal('gwt_custom_exercises') ?? []
+    const existingIds = new Set(current.map(e => e.id))
+    const merged = [...current, ...data.gwt_custom_exercises.filter(e => !existingIds.has(e.id))]
+    localStorage.setItem('gwt_custom_exercises', JSON.stringify(merged))
+  }
+
+  // Schedule — skip (keep current)
+}
+
+function previewMerge(data) {
+  const getLocal = k => { try { return JSON.parse(localStorage.getItem(k) ?? 'null') } catch { return null } }
+  const count = (local, incoming, key) => {
+    if (!Array.isArray(incoming)) return 0
+    const existing = new Set((local ?? []).map(x => x[key]))
+    return incoming.filter(x => !existing.has(x[key])).length
+  }
+  return {
+    sessions:   count(getLocal('gwt_sessions') ?? [],         data.gwt_sessions,         'id'),
+    bodyweight: count(getLocal('gwt_bodyweight') ?? [],       data.gwt_bodyweight,       'date'),
+    templates:  count(getLocal('gwt_templates') ?? [],        data.gwt_templates,        'id'),
+    exercises:  count(getLocal('gwt_custom_exercises') ?? [], data.gwt_custom_exercises, 'id'),
+  }
+}
+
+// ── Import preview sheet ─────────────────────────────────────────────────────
+function ImportPreviewSheet({ preview, onConfirm, onCancel }) {
+  const rows = [
+    { label: 'Workout sessions',  count: preview.sessions },
+    { label: 'Body weight logs',  count: preview.bodyweight },
+    { label: 'New templates',     count: preview.templates },
+    { label: 'Custom exercises',  count: preview.exercises },
+  ].filter(r => r.count > 0)
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-end justify-center" onClick={onCancel}>
+      <div className="absolute inset-0 bg-black/40" />
+      <div
+        className="relative bg-white dark:bg-gray-800 rounded-t-3xl w-full max-w-lg"
+        style={{ paddingBottom: 'calc(1.5rem + env(safe-area-inset-bottom))' }}
+        onClick={e => e.stopPropagation()}
+      >
+        <div className="pt-3 pb-1 flex justify-center">
+          <div className="w-10 h-1 bg-gray-200 dark:bg-gray-600 rounded-full" />
+        </div>
+        <div className="px-5 pt-3 pb-4">
+          <p className="text-base font-bold text-gray-900 dark:text-white mb-1">Merge Import</p>
+          <p className="text-xs text-gray-500 dark:text-gray-400 mb-4">
+            New data from the backup will be added alongside your current data. Nothing will be overwritten.
+          </p>
+          {rows.length === 0 ? (
+            <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">Nothing new to import — your data is already up to date.</p>
+          ) : (
+            <div className="flex flex-col gap-2 mb-4">
+              {rows.map(r => (
+                <div key={r.label} className="flex items-center justify-between bg-gray-50 dark:bg-gray-700/50 rounded-xl px-4 py-2.5">
+                  <span className="text-sm text-gray-700 dark:text-gray-200">{r.label}</span>
+                  <span className="text-sm font-bold text-indigo-600 dark:text-amber-400">+{r.count}</span>
+                </div>
+              ))}
+              <p className="text-[11px] text-gray-400 dark:text-gray-500 mt-1 px-1">
+                Your schedule and existing templates won't be changed.
+              </p>
+            </div>
+          )}
+          <div className="flex gap-2">
+            <button
+              onClick={onCancel}
+              className="flex-1 py-3 rounded-xl text-sm font-semibold border border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-300"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={onConfirm}
+              disabled={rows.length === 0}
+              className="flex-1 py-3 rounded-xl text-sm font-bold bg-indigo-600 dark:bg-amber-600 text-white disabled:opacity-40"
+            >
+              Merge &amp; Reload
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  )
 }
 
 // ── Day assign sheet ─────────────────────────────────────────────────────────
@@ -390,6 +502,8 @@ export function Dashboard() {
   const { sessions, setActivePage, setLogTemplateId, templates } = useApp()
   const { schedule, getDayTemplates, setDayTemplates } = useSchedule()
   const [assignDay, setAssignDay] = useState(null)
+  const [importPreview, setImportPreview] = useState(null)
+  const [pendingImportData, setPendingImportData] = useState(null)
   const importRef = useRef(null)
   const today = todayKey()
 
@@ -549,10 +663,17 @@ export function Dashboard() {
                 type="file"
                 accept=".json"
                 className="hidden"
-                onChange={e => {
+                onChange={async e => {
                   const file = e.target.files?.[0]
-                  if (file) importData(file, () => window.location.reload())
                   e.target.value = ''
+                  if (!file) return
+                  try {
+                    const data = await readBackupFile(file)
+                    setPendingImportData(data)
+                    setImportPreview(previewMerge(data))
+                  } catch {
+                    alert('Invalid backup file — could not read data.')
+                  }
                 }}
               />
             </div>
@@ -568,6 +689,21 @@ export function Dashboard() {
           current={getDayTemplates(assignDay)}
           onAssign={ids => setDayTemplates(assignDay, ids)}
           onClose={() => setAssignDay(null)}
+        />
+      )}
+      {importPreview && (
+        <ImportPreviewSheet
+          preview={importPreview}
+          onConfirm={() => {
+            mergeImport(pendingImportData)
+            setImportPreview(null)
+            setPendingImportData(null)
+            window.location.reload()
+          }}
+          onCancel={() => {
+            setImportPreview(null)
+            setPendingImportData(null)
+          }}
         />
       )}
     </div>
