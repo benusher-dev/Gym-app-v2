@@ -355,6 +355,7 @@ const EX_TYPES = [
 ]
 
 const NORWEGIAN_TEMPLATE_ID = 'offszn-norwegian'
+const THRESHOLD_TEMPLATE_ID = 'threshold-work'
 
 const NORWEGIAN_EQUIPMENT = [
   { id: 'running',      label: 'Running',      icon: '🏃', sub: 'Track or treadmill' },
@@ -441,6 +442,72 @@ function EquipmentPickerSheet({ currentEquipment, onSelect, onClose }) {
               </button>
             ))}
           </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+function ThresholdPickerSheet({ onStart, onClose }) {
+  const [rounds, setRounds] = useState(6)
+  const accent = '#7ba4c4'
+  return (
+    <div className="fixed inset-0 z-50 flex items-end justify-center" onClick={onClose}>
+      <div className="absolute inset-0 bg-black/40" />
+      <div
+        className="relative bg-white dark:bg-gray-800 rounded-t-3xl w-full max-w-lg overflow-hidden"
+        style={{ paddingBottom: 'calc(1.5rem + env(safe-area-inset-bottom))' }}
+        onClick={e => e.stopPropagation()}
+      >
+        <div className="pt-3 pb-1 flex justify-center">
+          <div className="w-10 h-1 bg-gray-200 dark:bg-gray-600 rounded-full" />
+        </div>
+        <div style={{ height: 3, background: accent }} />
+        <div className="px-5 pt-4 pb-4">
+          <p className="text-[9px] font-bold tracking-widest uppercase mb-1" style={{ color: accent }}>Sustained Pace</p>
+          <p className="text-lg font-extrabold text-gray-900 dark:text-white tracking-tight mb-4">Threshold Work</p>
+          <div className="grid grid-cols-2 rounded-xl overflow-hidden mb-4" style={{ gap: 1, background: '#e2e8f0' }}>
+            <div className="bg-slate-50 dark:bg-gray-900 p-2.5">
+              <p className="text-[8px] font-bold tracking-widest uppercase text-gray-400 mb-1">Work</p>
+              <p className="text-base font-extrabold text-gray-800 dark:text-gray-100 leading-none">5 <span className="text-[9px] font-semibold text-gray-400">min</span></p>
+            </div>
+            <div className="bg-slate-50 dark:bg-gray-900 p-2.5">
+              <p className="text-[8px] font-bold tracking-widest uppercase text-gray-400 mb-1">Rest</p>
+              <p className="text-base font-extrabold text-gray-800 dark:text-gray-100 leading-none">1 <span className="text-[9px] font-semibold text-gray-400">min</span></p>
+            </div>
+            <div className="bg-slate-50 dark:bg-gray-900 p-2.5">
+              <p className="text-[8px] font-bold tracking-widest uppercase text-gray-400 mb-1">RPE</p>
+              <p className="text-base font-extrabold leading-none" style={{ color: accent }}>7–8</p>
+            </div>
+            <div className="bg-slate-50 dark:bg-gray-900 p-2.5">
+              <p className="text-[8px] font-bold tracking-widest uppercase text-gray-400 mb-1">Rounds</p>
+              <p className="text-base font-extrabold text-gray-800 dark:text-gray-100 leading-none">4–8</p>
+            </div>
+          </div>
+          <p className="text-[9px] font-bold tracking-widest uppercase text-gray-400 mb-2">Select Rounds</p>
+          <div className="flex gap-2 mb-5">
+            {[4, 5, 6, 7, 8].map(n => (
+              <button
+                key={n}
+                onClick={() => setRounds(n)}
+                className="flex-1 py-2 rounded-lg text-sm font-bold transition-colors"
+                style={rounds === n
+                  ? { background: 'rgba(123,164,196,0.15)', color: accent, border: `1.5px solid ${accent}` }
+                  : { background: '#f1f5f9', color: '#94a3b8', border: '1.5px solid transparent' }
+                }
+              >
+                {n}
+              </button>
+            ))}
+          </div>
+          <button
+            onClick={() => onStart(rounds)}
+            className="w-full py-3.5 rounded-xl text-sm font-extrabold tracking-wide flex items-center justify-center gap-2 text-white"
+            style={{ background: accent }}
+          >
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="white"><polygon points="5 3 19 12 5 21 5 3" /></svg>
+            START SESSION
+          </button>
         </div>
       </div>
     </div>
@@ -757,6 +824,7 @@ export function LogWorkout() {
     return localStorage.getItem('gwt_norwegian_equipment') ?? 'running'
   })
   const [showEquipmentPicker, setShowEquipmentPicker] = useState(false)
+  const [showThresholdPicker, setShowThresholdPicker] = useState(false)
   const [pendingTemplate, setPendingTemplate] = useState(null)
   const timerRef = useRef(null)
   const elapsedRef = useRef(null)
@@ -847,7 +915,26 @@ export function LogWorkout() {
       setShowEquipmentPicker(true)
       return
     }
+    if (template.id === THRESHOLD_TEMPLATE_ID) {
+      setPendingTemplate(template)
+      setShowThresholdPicker(true)
+      return
+    }
     startWorkout(template, null)
+  }
+
+  function handleThresholdStart(rounds) {
+    setShowThresholdPicker(false)
+    if (pendingTemplate) {
+      const t = {
+        ...pendingTemplate,
+        exercises: pendingTemplate.exercises.map(ex =>
+          ex.id === 'tw-intervals' ? { ...ex, sets: rounds } : ex
+        ),
+      }
+      startWorkout(t, null)
+      setPendingTemplate(null)
+    }
   }
 
   function handleEquipmentSelect(equipment) {
@@ -992,6 +1079,12 @@ export function LogWorkout() {
             currentEquipment={norwegianEquipment}
             onSelect={handleEquipmentSelect}
             onClose={() => { setShowEquipmentPicker(false); setPendingTemplate(null) }}
+          />
+        )}
+        {showThresholdPicker && (
+          <ThresholdPickerSheet
+            onStart={handleThresholdStart}
+            onClose={() => { setShowThresholdPicker(false); setPendingTemplate(null) }}
           />
         )}
       </>
@@ -1268,6 +1361,12 @@ export function LogWorkout() {
           currentEquipment={norwegianEquipment}
           onSelect={handleEquipmentSelect}
           onClose={() => { setShowEquipmentPicker(false); setPendingTemplate(null) }}
+        />
+      )}
+      {showThresholdPicker && (
+        <ThresholdPickerSheet
+          onStart={handleThresholdStart}
+          onClose={() => { setShowThresholdPicker(false); setPendingTemplate(null) }}
         />
       )}
       {showPlates && <PlateCalculator initialTab="plates" onClose={() => setShowPlates(false)} />}
