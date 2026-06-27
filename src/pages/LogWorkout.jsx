@@ -43,7 +43,7 @@ function buildLogExercises(template) {
     supersetId: ex.supersetId ?? null,
     sets: Array.from({ length: Math.max(1, ex.sets || 1) }, () => ({
       id: generateId(),
-      reps: ex.reps ?? '',
+      reps: '',
       weight: ex.weight ?? '',
       done: false,
       rpe: null,
@@ -154,8 +154,8 @@ function SetRow({ set, setIndex, prevSet, exerciseType, showRPE, canRemove, onCh
           onChange={e => onChange({ ...set, reps: e.target.value === '' ? '' : Number(e.target.value) })}
           className={inputCls}
         />
-        {prevSet?.reps != null && (
-          <p className="text-[9px] text-gray-300 dark:text-gray-600 text-center mt-0.5">
+        {!set.done && prevSet?.reps != null && (
+          <p className="text-[10px] text-indigo-400 dark:text-indigo-500 text-center mt-0.5 font-semibold">
             {prevSet.reps}{exerciseType === 'cardio' ? 'm' : exerciseType === 'hold' ? 's' : ''}
           </p>
         )}
@@ -169,8 +169,8 @@ function SetRow({ set, setIndex, prevSet, exerciseType, showRPE, canRemove, onCh
           onChange={e => onChange({ ...set, weight: e.target.value === '' ? '' : Number(e.target.value) })}
           className={inputCls}
         />
-        {prevSet?.weight != null && prevSet.weight > 0 && (
-          <p className="text-[9px] text-gray-300 dark:text-gray-600 text-center mt-0.5">
+        {!set.done && prevSet?.weight != null && prevSet.weight > 0 && (
+          <p className="text-[10px] text-gray-400 dark:text-gray-500 text-center mt-0.5 font-medium">
             {prevSet.weight}{exerciseType === 'cardio' ? 'km' : 'kg'}
           </p>
         )}
@@ -1118,7 +1118,7 @@ export function LogWorkout() {
       <div className="flex flex-col h-full">
         {/* ── Rest timer banner ── */}
         {timer && !timer.done && (
-          <div className="flex-shrink-0 bg-gradient-to-r from-sky-400 to-blue-500 dark:from-amber-600 dark:to-orange-700 px-5 pt-4 pb-5 flex items-center">
+          <div className="flex-shrink-0 bg-gradient-to-r from-[#7ba4c4] to-[#6b8fae] dark:from-amber-600 dark:to-orange-700 px-5 pt-4 pb-5 flex items-center">
             <div className="flex-1" />
             <div className="text-center">
               <p className="text-xs font-bold text-white/70 uppercase tracking-[0.2em] mb-1">Rest</p>
@@ -1142,7 +1142,7 @@ export function LogWorkout() {
             </div>
           </div>
         )}
-        <div className="flex-shrink-0 bg-gradient-to-r from-sky-400 to-blue-500 dark:from-amber-600 dark:to-orange-700 shadow-sm">
+        <div className="flex-shrink-0 bg-gradient-to-r from-[#7ba4c4] to-[#6b8fae] dark:from-amber-600 dark:to-orange-700 shadow-sm">
           <div className="px-4 py-2.5 max-w-lg mx-auto">
             <h1 className="text-sm font-bold text-white text-center truncate">{selectedTemplate.name}</h1>
           </div>
@@ -1307,7 +1307,7 @@ export function LogWorkout() {
             <Button size="lg" className="w-full" onClick={handleFinish}>Finish Workout</Button>
           </div>
         </div>
-        <div className="flex-shrink-0 bg-gradient-to-r from-sky-400 to-blue-500 dark:from-amber-600 dark:to-orange-700 border-t border-white/10">
+        <div className="flex-shrink-0 bg-gradient-to-r from-[#7ba4c4] to-[#6b8fae] dark:from-amber-600 dark:to-orange-700 border-t border-white/10">
           <div className="px-4 py-2.5 max-w-lg mx-auto">
             <div className="flex items-center justify-between gap-1">
               <SessionNavBadge
