@@ -56,7 +56,7 @@ export function BottomNav() {
   const { activePage, setActivePage } = useApp()
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-sky-400 to-blue-500 shadow-lg shadow-sky-400/30 z-40" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
+    <nav className="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-[#7ba4c4] to-[#6b8fae] dark:from-amber-600 dark:to-orange-700 shadow-lg shadow-[#7ba4c4]/30 dark:shadow-amber-600/30 z-40" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
       <div className="flex items-stretch max-w-lg mx-auto">
         {NAV_ITEMS.map(item => (
           <button
