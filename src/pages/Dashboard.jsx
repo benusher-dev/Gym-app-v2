@@ -542,14 +542,14 @@ export function Dashboard() {
         <div className="flex flex-col gap-5">
 
           {/* Today hero */}
-          <div className={`rounded-2xl p-5 shadow-lg text-white ${todayTemplates.length ? 'bg-gradient-to-br from-indigo-600 to-indigo-700 dark:from-amber-600 dark:to-orange-700' : 'bg-gradient-to-br from-gray-700 to-gray-800'}`}>
+          <div className={`rounded-2xl p-5 shadow-lg text-white ${todayTemplates.length ? 'bg-gradient-to-br from-[#7ba4c4] to-[#5a7a96] dark:from-amber-600 dark:to-orange-700' : 'bg-gradient-to-br from-gray-700 to-gray-800'}`}>
             <p className="text-xs font-semibold uppercase tracking-widest opacity-70 mb-1">Today</p>
             {todayTemplates.length > 0 ? (
               todayTemplates.length === 1 ? (
                 <>
                   <h2 className="text-xl font-bold mb-1">{todayTemplates[0].name}</h2>
                   <p className="text-sm opacity-70 mb-4">{todayTemplates[0].exercises.length} exercise{todayTemplates[0].exercises.length !== 1 ? 's' : ''}</p>
-                  <Button variant="secondary" className="bg-white text-indigo-600 dark:text-amber-700 border-0 hover:bg-indigo-50" onClick={startToday}>
+                  <Button variant="secondary" className="bg-white text-[#5a7a96] dark:text-amber-700 border-0 hover:bg-slate-50" onClick={startToday}>
                     Start Workout
                   </Button>
                 </>
