@@ -11,12 +11,13 @@ import { ExercisePicker } from '../components/templates/ExercisePicker'
 import { generateId } from '../utils/dateHelpers'
 
 const REST_PRESETS = [
-  { label: '30s', seconds: 30 },
-  { label: '45s', seconds: 45 },
-  { label: '1m',  seconds: 60 },
-  { label: '90s', seconds: 90 },
-  { label: '2m',  seconds: 120 },
-  { label: '3m',  seconds: 180 },
+  { label: '30s',  seconds: 30 },
+  { label: '45s',  seconds: 45 },
+  { label: '1m',   seconds: 60 },
+  { label: '90s',  seconds: 90 },
+  { label: '2m',   seconds: 120 },
+  { label: '2:30', seconds: 150 },
+  { label: '3m',   seconds: 180 },
 ]
 
 function getExerciseType(ex) {
@@ -271,7 +272,7 @@ function RestTimerRow({ timerId, restSeconds, onChangeRest, timer, onStart, onSt
 }
 
 // ── Exercise card (single) ────────────────────────────────────────────────────
-function ExerciseCard({ ex, exIdx, prevSets, timer, showRPE, autoRest, updateSet, addSet, removeSet, updateRestSeconds, startTimer, stopTimer, onEditExercise }) {
+function ExerciseCard({ ex, exIdx, prevSets, timer, showRPE, autoRest, updateSet, addSet, removeSet, updateRestSeconds, startTimer, stopTimer, onEditExercise, onDragHandle, isDragOver }) {
   const timerId  = `ex_${ex.id}`
   const exType   = getExerciseType(ex)
   const badge    = TYPE_META[exType]
@@ -284,6 +285,19 @@ function ExerciseCard({ ex, exIdx, prevSets, timer, showRPE, autoRest, updateSet
       </svg>
     </button>
   )
+
+  const dragHandle = onDragHandle ? (
+    <button
+      onPointerDown={e => { e.preventDefault(); onDragHandle(e) }}
+      className="flex-shrink-0 p-1 text-gray-300 dark:text-gray-600 cursor-grab active:cursor-grabbing select-none"
+      style={{ touchAction: 'none' }}
+      aria-label="Drag to reorder"
+    >
+      <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+        <line x1="4" y1="7" x2="20" y2="7" /><line x1="4" y1="12" x2="20" y2="12" /><line x1="4" y1="17" x2="20" y2="17" />
+      </svg>
+    </button>
+  ) : null
 
   // Compact warm-up card — no rest timer, no add-set, tighter padding
   if (isWarmup) {
@@ -313,9 +327,13 @@ function ExerciseCard({ ex, exIdx, prevSets, timer, showRPE, autoRest, updateSet
   }
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-4">
+    <div
+      data-exidx={exIdx}
+      className={`bg-white dark:bg-gray-800 rounded-2xl border shadow-sm p-4 transition-colors ${isDragOver ? 'border-[#7ba4c4] dark:border-amber-500' : 'border-gray-100 dark:border-gray-700'}`}
+    >
       <div className="mb-3">
         <div className="flex items-center gap-2">
+          {dragHandle}
           <p className="font-semibold text-gray-900 dark:text-white flex-1">{ex.name}</p>
           {badge.label && <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${badge.cls}`}>{badge.label}</span>}
           {pencilBtn}
@@ -825,6 +843,7 @@ export function LogWorkout() {
   })
   const [showEquipmentPicker, setShowEquipmentPicker] = useState(false)
   const [showThresholdPicker, setShowThresholdPicker] = useState(false)
+  const [dragOverIdx, setDragOverIdx] = useState(null)
   const [pendingTemplate, setPendingTemplate] = useState(null)
   const timerRef = useRef(null)
   const elapsedRef = useRef(null)
@@ -978,6 +997,45 @@ export function LogWorkout() {
 
   function updateSet(exIndex, setIndex, updatedSet) {
     setLogExercises(prev => prev.map((ex, i) => i === exIndex ? { ...ex, sets: ex.sets.map((s, j) => j === setIndex ? updatedSet : s) } : ex))
+  }
+
+  function moveExercise(fromIdx, toIdx) {
+    setLogExercises(prev => {
+      const arr = [...prev]
+      const [item] = arr.splice(fromIdx, 1)
+      arr.splice(toIdx, 0, item)
+      return arr
+    })
+  }
+
+  function startDrag(e, fromIdx) {
+    e.preventDefault()
+    const state = { fromIdx, toIdx: fromIdx }
+    setDragOverIdx(fromIdx)
+
+    function onMove(e2) {
+      e2.preventDefault()
+      const els = document.querySelectorAll('[data-exidx]')
+      for (const el of els) {
+        const rect = el.getBoundingClientRect()
+        if (e2.clientY >= rect.top && e2.clientY <= rect.bottom) {
+          const targetIdx = parseInt(el.dataset.exidx)
+          state.toIdx = targetIdx
+          setDragOverIdx(targetIdx)
+          break
+        }
+      }
+    }
+
+    function onUp() {
+      if (state.fromIdx !== state.toIdx) moveExercise(state.fromIdx, state.toIdx)
+      setDragOverIdx(null)
+      document.removeEventListener('pointermove', onMove)
+      document.removeEventListener('pointerup', onUp)
+    }
+
+    document.addEventListener('pointermove', onMove, { passive: false })
+    document.addEventListener('pointerup', onUp)
   }
 
   function addSet(exIndex) {
@@ -1171,6 +1229,8 @@ export function LogWorkout() {
                     updateSet={updateSet} addSet={addSet} removeSet={removeSet}
                     updateRestSeconds={updateRestSeconds} startTimer={startTimer} stopTimer={stopTimer}
                     onEditExercise={setEditingExercise}
+                    onDragHandle={e => startDrag(e, exIdx)}
+                    isDragOver={dragOverIdx === exIdx}
                   />
                 )
               }
