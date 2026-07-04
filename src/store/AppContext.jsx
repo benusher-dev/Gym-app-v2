@@ -12,6 +12,7 @@ export function AppProvider({ children }) {
   const [activePage, setActivePage] = useState('dashboard')
   const [logTemplateId, setLogTemplateId] = useState(null)
   const [progressExercise, setProgressExercise] = useState('')
+  const [workoutStep, setWorkoutStep] = useState(1)
 
   return (
     <AppContext.Provider
@@ -22,6 +23,7 @@ export function AppProvider({ children }) {
         activePage, setActivePage,
         logTemplateId, setLogTemplateId,
         progressExercise, setProgressExercise,
+        workoutStep, setWorkoutStep,
       }}
     >
       {children}

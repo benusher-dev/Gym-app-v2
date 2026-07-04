@@ -15,7 +15,10 @@ function Pages() {
       <div className="flex-1 overflow-hidden flex flex-col">
         {activePage === 'dashboard'   && <Dashboard />}
         {activePage === 'workouts'    && <Workouts />}
-        {activePage === 'log'         && <LogWorkout />}
+        {/* LogWorkout stays mounted to preserve timer/state across tab switches */}
+        <div className={activePage === 'log' ? 'flex-1 min-h-0 flex flex-col' : 'hidden'}>
+          <LogWorkout />
+        </div>
         {activePage === 'history'     && <History />}
         {activePage === 'progress'    && <Progress />}
         {activePage === 'bodyweight'  && <BodyWeightPage />}

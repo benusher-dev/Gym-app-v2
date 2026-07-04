@@ -539,6 +539,7 @@ function ExerciseEditSheet({ ex, exIdx, logExercises, onSave, onClose }) {
   const [exType, setExType]       = useState(getExerciseType(ex))
   const [supersetId, setSsId]     = useState(ex.supersetId ?? null)
   const [noteLocked, setNoteLocked] = useState(true)
+  const [showLibrary, setShowLibrary] = useState(false)
 
   // Unique supersets in this workout (exclude current exercise from member list)
   const supersets = useMemo(() => {
@@ -580,13 +581,33 @@ function ExerciseEditSheet({ ex, exIdx, logExercises, onSave, onClose }) {
           {/* Name */}
           <div>
             <label className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1 block">Name</label>
-            <input
-              type="text" value={name} autoFocus
-              onChange={e => setName(e.target.value)}
-              onKeyDown={e => e.key === 'Enter' && handleSave()}
-              className={inputCls}
-            />
+            <div className="flex gap-2">
+              <input
+                type="text" value={name} autoFocus
+                onChange={e => setName(e.target.value)}
+                onKeyDown={e => e.key === 'Enter' && handleSave()}
+                className={inputCls + ' flex-1'}
+              />
+              <button
+                type="button"
+                onClick={() => setShowLibrary(true)}
+                className="flex-shrink-0 px-3 py-2 rounded-xl border border-gray-200 dark:border-gray-600 text-xs font-semibold text-gray-500 dark:text-gray-400 hover:border-[#7ba4c4] hover:text-[#7ba4c4] transition-colors"
+              >
+                Browse
+              </button>
+            </div>
           </div>
+          {showLibrary && (
+            <ExercisePicker
+              open={true}
+              onAdd={({ name: n, category }) => {
+                setName(n)
+                if (category === 'cardio') setExType('cardio')
+                setShowLibrary(false)
+              }}
+              onClose={() => setShowLibrary(false)}
+            />
+          )}
 
           {/* Type */}
           <div>
@@ -815,9 +836,10 @@ function SessionNavBadge({ templateSessions, refIdx, weekNum, onNav }) {
 
 // ── Main component ─────────────────────────────────────────────────────────────
 export function LogWorkout() {
-  const { templates, sessions, logTemplateId, setLogTemplateId, addSession, setActivePage, updateTemplate } = useApp()
+  const { templates, sessions, logTemplateId, setLogTemplateId, addSession, setActivePage, updateTemplate, setWorkoutStep } = useApp()
   const { getWeek, setWeek, incrementWeek } = useWeekProgress()
-  const [step, setStep] = useState(1)
+  const [step, setStep_] = useState(1)
+  function setStep(s) { setStep_(s); setWorkoutStep(s) }
   const [selectedTemplate, setSelectedTemplate] = useState(null)
   const [logExercises, setLogExercises] = useState([])
   const [templateSessions, setTemplateSessions] = useState([])

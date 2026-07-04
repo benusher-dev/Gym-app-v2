@@ -53,7 +53,8 @@ const NAV_ITEMS = [
 ]
 
 export function BottomNav() {
-  const { activePage, setActivePage } = useApp()
+  const { activePage, setActivePage, workoutStep } = useApp()
+  const workoutLive = workoutStep === 2
 
   return (
     <nav className="fixed bottom-0 left-0 right-0 bg-gradient-to-r from-[#7ba4c4] to-[#6b8fae] dark:from-amber-600 dark:to-orange-700 shadow-lg shadow-[#7ba4c4]/30 dark:shadow-amber-600/30 z-40" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
@@ -69,15 +70,27 @@ export function BottomNav() {
             }`}
           >
             {activePage === item.id ? (
-              <div className="flex flex-col items-center gap-0.5 bg-white/20 rounded-xl px-3 py-1 w-full">
+              <div className="flex flex-col items-center gap-0.5 bg-white/20 rounded-xl px-3 py-1 w-full relative">
                 {item.icon}
                 <span className="text-[10px] font-semibold">{item.label}</span>
+                {item.id === 'log' && workoutLive && (
+                  <span className="absolute top-1 right-2 flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-300 opacity-75" />
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-green-400" />
+                  </span>
+                )}
               </div>
             ) : (
-              <>
+              <div className="relative flex flex-col items-center gap-0.5">
                 {item.icon}
                 <span className="text-[10px] font-medium">{item.label}</span>
-              </>
+                {item.id === 'log' && workoutLive && (
+                  <span className="absolute -top-1 -right-1 flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-300 opacity-75" />
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-green-400" />
+                  </span>
+                )}
+              </div>
             )}
           </button>
         ))}
