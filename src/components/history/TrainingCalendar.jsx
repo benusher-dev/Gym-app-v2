@@ -39,11 +39,11 @@ export function TrainingCalendar({ sessions }) {
   }, [cells])
 
   function cellColor(count, isFuture) {
-    if (isFuture) return 'bg-gray-50 dark:bg-gray-800'
-    if (count === 0) return 'bg-gray-100 dark:bg-gray-700'
-    if (count === 1) return 'bg-indigo-200 dark:bg-indigo-800'
-    if (count === 2) return 'bg-indigo-400 dark:bg-indigo-600'
-    return 'bg-indigo-600 dark:bg-indigo-400'
+    if (isFuture) return 'bg-[rgba(123,164,196,0.04)]'
+    if (count === 0) return 'bg-[rgba(123,164,196,0.09)]'
+    if (count === 1) return 'bg-[rgba(123,164,196,0.3)]'
+    if (count === 2) return 'bg-[rgba(123,164,196,0.6)]'
+    return 'bg-[#7ba4c4]'
   }
 
   const totalThisYear = useMemo(() => {
@@ -52,30 +52,30 @@ export function TrainingCalendar({ sessions }) {
   }, [sessions])
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-4">
+    <div className="bg-[rgba(123,164,196,0.05)] rounded-2xl p-4">
       <div className="flex items-center justify-between mb-3">
         <p className="text-sm font-semibold text-gray-900 dark:text-white">Training Heatmap</p>
-        <span className="text-xs text-gray-500 dark:text-gray-400">{totalThisYear} sessions this year</span>
+        <span className="text-xs text-[#94a3b8]">{totalThisYear} this year</span>
       </div>
       <div className="overflow-x-auto" style={{ scrollbarWidth: 'none' }}>
         <div className="flex gap-1" style={{ minWidth: 'max-content' }}>
           <div className="flex flex-col gap-1 pt-4 pr-1">
             {DAY_LABELS.map((d, i) => (
               <div key={i} className="h-3 w-3 flex items-center justify-center">
-                <span className={`text-[8px] font-medium text-gray-400 ${i % 2 === 0 ? '' : 'invisible'}`}>{d}</span>
+                <span className={`text-[8px] font-medium text-[#94a3b8] ${i % 2 === 0 ? '' : 'invisible'}`}>{d}</span>
               </div>
             ))}
           </div>
           {cells.map((week, wi) => (
             <div key={wi} className="flex flex-col gap-1">
               <div className="h-3 flex items-center">
-                {monthLabels[wi] && <span className="text-[8px] font-semibold text-gray-400 leading-none">{monthLabels[wi]}</span>}
+                {monthLabels[wi] && <span className="text-[8px] font-semibold text-[#94a3b8] leading-none">{monthLabels[wi]}</span>}
               </div>
               {week.map(day => (
                 <div
                   key={day.key}
                   title={day.count > 0 ? `${day.count} session${day.count > 1 ? 's' : ''} on ${day.key}` : day.key}
-                  className={`h-3 w-3 rounded-sm transition-colors ${cellColor(day.count, day.isFuture)} ${day.isToday ? 'ring-1 ring-indigo-500' : ''}`}
+                  className={`h-3 w-3 rounded-sm transition-colors ${cellColor(day.count, day.isFuture)} ${day.isToday ? 'ring-1 ring-[#7ba4c4]' : ''}`}
                 />
               ))}
             </div>
@@ -83,11 +83,16 @@ export function TrainingCalendar({ sessions }) {
         </div>
       </div>
       <div className="flex items-center gap-1.5 mt-3 justify-end">
-        <span className="text-[9px] text-gray-400">Less</span>
-        {['bg-gray-100 dark:bg-gray-700','bg-indigo-200 dark:bg-indigo-800','bg-indigo-400 dark:bg-indigo-600','bg-indigo-600 dark:bg-indigo-400'].map((c, i) => (
+        <span className="text-[9px] text-[#94a3b8]">Less</span>
+        {[
+          'bg-[rgba(123,164,196,0.09)]',
+          'bg-[rgba(123,164,196,0.3)]',
+          'bg-[rgba(123,164,196,0.6)]',
+          'bg-[#7ba4c4]',
+        ].map((c, i) => (
           <div key={i} className={`h-3 w-3 rounded-sm ${c}`} />
         ))}
-        <span className="text-[9px] text-gray-400">More</span>
+        <span className="text-[9px] text-[#94a3b8]">More</span>
       </div>
     </div>
   )

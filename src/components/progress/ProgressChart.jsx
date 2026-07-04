@@ -4,6 +4,9 @@ const PAD = { top: 16, right: 16, bottom: 40, left: 44 }
 const CHART_W = W - PAD.left - PAD.right
 const CHART_H = H - PAD.top - PAD.bottom
 
+const STEEL = '#7ba4c4'
+const STEEL_FILL = 'rgba(123,164,196,0.1)'
+
 function lerp(value, inMin, inMax, outMin, outMax) {
   if (inMax === inMin) return (outMin + outMax) / 2
   return outMin + ((value - inMin) / (inMax - inMin)) * (outMax - outMin)
@@ -30,6 +33,11 @@ export function ProgressChart({ data, metric }) {
   })
 
   const polylinePoints = points.map(p => `${p.x},${p.y}`).join(' ')
+  const areaPath = data.length > 1
+    ? `M${points[0].x},${points[0].y} ` +
+      points.slice(1).map(p => `L${p.x},${p.y}`).join(' ') +
+      ` L${points[points.length - 1].x},${PAD.top + CHART_H} L${points[0].x},${PAD.top + CHART_H} Z`
+    : ''
 
   const yTicks = 4
   const yTickValues = Array.from({ length: yTicks + 1 }, (_, i) =>
@@ -49,19 +57,20 @@ export function ProgressChart({ data, metric }) {
         role="img"
         aria-label={`${metric} over time`}
       >
+        <defs>
+          <linearGradient id="steelGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor={STEEL} stopOpacity="0.18" />
+            <stop offset="100%" stopColor={STEEL} stopOpacity="0" />
+          </linearGradient>
+        </defs>
+
         {/* Y grid lines */}
         {yTickValues.map((val, i) => {
           const y = PAD.top + lerp(val, yMax + yPad, yMin - yPad, 0, CHART_H)
           return (
             <g key={i}>
-              <line
-                x1={PAD.left} y1={y} x2={PAD.left + CHART_W} y2={y}
-                stroke="#f3f4f6" strokeWidth="1"
-              />
-              <text
-                x={PAD.left - 6} y={y + 4}
-                textAnchor="end" fontSize="10" fill="#9ca3af"
-              >
+              <line x1={PAD.left} y1={y} x2={PAD.left + CHART_W} y2={y} stroke="rgba(123,164,196,0.12)" strokeWidth="1" />
+              <text x={PAD.left - 6} y={y + 4} textAnchor="end" fontSize="10" fill="#94a3b8">
                 {Math.round(val)}
               </text>
             </g>
@@ -71,33 +80,39 @@ export function ProgressChart({ data, metric }) {
         {/* X tick labels */}
         {xTickIndices.map(i => {
           const p = points[i]
-          const label = new Date(data[i].date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+          const label = new Date(data[i].date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short' })
           return (
-            <text
-              key={i}
-              x={p.x} y={H - 6}
-              textAnchor="middle" fontSize="10" fill="#9ca3af"
-            >
+            <text key={i} x={p.x} y={H - 6} textAnchor="middle" fontSize="10" fill="#94a3b8">
               {label}
             </text>
           )
         })}
+
+        {/* Area fill */}
+        {data.length > 1 && <path d={areaPath} fill="url(#steelGrad)" />}
 
         {/* Line */}
         {data.length > 1 && (
           <polyline
             points={polylinePoints}
             fill="none"
-            stroke="#6366f1"
+            stroke={STEEL}
             strokeWidth="2.5"
             strokeLinejoin="round"
             strokeLinecap="round"
           />
         )}
 
-        {/* Dots */}
+        {/* Dots — emphasise last */}
         {points.map((p, i) => (
-          <circle key={i} cx={p.x} cy={p.y} r="4" fill="#6366f1" stroke="white" strokeWidth="2" />
+          <circle
+            key={i}
+            cx={p.x} cy={p.y}
+            r={i === points.length - 1 ? 4.5 : 3}
+            fill={STEEL}
+            stroke="white"
+            strokeWidth="2"
+          />
         ))}
       </svg>
     </div>

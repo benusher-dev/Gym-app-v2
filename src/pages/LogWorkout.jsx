@@ -59,6 +59,19 @@ function buildSessionLookup(session) {
   return lookup
 }
 
+function buildHistMaxes(sessions) {
+  const map = {}
+  sessions.forEach(s => {
+    s.exercises.forEach(ex => {
+      if (!map[ex.name]) map[ex.name] = { maxWeight: 0 }
+      ex.sets.forEach(set => {
+        if ((set.weight || 0) > map[ex.name].maxWeight) map[ex.name].maxWeight = set.weight || 0
+      })
+    })
+  })
+  return map
+}
+
 function getTemplateSessions(sessions, templateId) {
   return sessions
     .filter(s => s.templateId === templateId)
@@ -120,7 +133,8 @@ function SetHeader({ exerciseType, showRPE }) {
 }
 
 // ── Set row ───────────────────────────────────────────────────────────────────
-function SetRow({ set, setIndex, prevSet, exerciseType, showRPE, canRemove, onChange, onToggleDone, onRemove }) {
+function SetRow({ set, setIndex, prevSet, histMax, exerciseType, showRPE, canRemove, onChange, onToggleDone, onRemove }) {
+  const isPR = set.done && (set.weight || 0) > 0 && histMax && (set.weight || 0) > (histMax.maxWeight || 0)
   const inputCls = set.done
     ? 'rounded-lg bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-300 px-2 py-1.5 text-sm text-center focus:outline-none w-full'
     : 'rounded-lg bg-white dark:bg-gray-700 dark:text-white shadow-[0_1px_3px_rgba(0,0,0,0.08)] px-2 py-1.5 text-sm text-center focus:outline-none focus:ring-2 focus:ring-[#7ba4c4]/40 w-full'
@@ -157,7 +171,7 @@ function SetRow({ set, setIndex, prevSet, exerciseType, showRPE, canRemove, onCh
           className={inputCls}
         />
         {!set.done && prevSet?.reps != null && (
-          <p className="text-[10px] text-indigo-400 dark:text-indigo-500 text-center mt-0.5 font-semibold">
+          <p className="text-[10px] text-[#7ba4c4] dark:text-[#7ba4c4]/70 text-center mt-0.5 font-semibold">
             {prevSet.reps}{exerciseType === 'cardio' ? 'm' : exerciseType === 'hold' ? 's' : ''}
           </p>
         )}
@@ -175,6 +189,9 @@ function SetRow({ set, setIndex, prevSet, exerciseType, showRPE, canRemove, onCh
           <p className="text-[10px] text-gray-400 dark:text-gray-500 text-center mt-0.5 font-medium">
             {prevSet.weight}{exerciseType === 'cardio' ? 'km' : 'kg'}
           </p>
+        )}
+        {isPR && (
+          <p className="text-[10px] font-bold text-amber-600 text-center mt-0.5">★ PR</p>
         )}
       </div>
 
@@ -273,7 +290,7 @@ function RestTimerRow({ timerId, restSeconds, onChangeRest, timer, onStart, onSt
 }
 
 // ── Exercise card (single) ────────────────────────────────────────────────────
-function ExerciseCard({ ex, exIdx, prevSets, timer, showRPE, autoRest, updateSet, addSet, removeSet, updateRestSeconds, startTimer, stopTimer, onEditExercise, onDragHandle, isDragOver }) {
+function ExerciseCard({ ex, exIdx, prevSets, histMax, timer, showRPE, autoRest, updateSet, addSet, removeSet, updateRestSeconds, startTimer, stopTimer, onEditExercise, onDragHandle, isDragOver }) {
   const timerId  = `ex_${ex.id}`
   const exType   = getExerciseType(ex)
   const badge    = TYPE_META[exType]
@@ -316,6 +333,7 @@ function ExerciseCard({ ex, exIdx, prevSets, timer, showRPE, autoRest, updateSet
             key={set.id}
             set={set} setIndex={setIdx}
             prevSet={prevSets?.[setIdx]}
+            histMax={histMax}
             exerciseType={exType} showRPE={false}
             canRemove={false}
             onChange={updated => updateSet(exIdx, setIdx, updated)}
@@ -347,6 +365,7 @@ function ExerciseCard({ ex, exIdx, prevSets, timer, showRPE, autoRest, updateSet
           key={set.id}
           set={set} setIndex={setIdx}
           prevSet={prevSets?.[setIdx]}
+          histMax={histMax}
           exerciseType={exType} showRPE={showRPE}
           canRemove={ex.sets.length > 1}
           onChange={updated => updateSet(exIdx, setIdx, updated)}
@@ -868,6 +887,7 @@ export function LogWorkout() {
   const [showThresholdPicker, setShowThresholdPicker] = useState(false)
   const [dragOverIdx, setDragOverIdx] = useState(null)
   const [pendingTemplate, setPendingTemplate] = useState(null)
+  const [histMaxes, setHistMaxes] = useState({})
   const timerRef = useRef(null)
   const elapsedRef = useRef(null)
   const startedAtRef = useRef(null)
@@ -943,6 +963,7 @@ export function LogWorkout() {
     setSelectedTemplate(t)
     setLogExercises(buildLogExercises(t))
     setTemplateSessions(getTemplateSessions(sessions, template.id))
+    setHistMaxes(buildHistMaxes(sessions))
     setRefSessionIdx(0)
     setNotes('')
     setTimer(null)
@@ -1248,6 +1269,7 @@ export function LogWorkout() {
                     key={ex.id}
                     ex={ex} exIdx={exIdx}
                     prevSets={prevLookup[ex.name]}
+                    histMax={histMaxes[ex.name]}
                     timer={timer} showRPE={showRPE} autoRest={autoRest}
                     updateSet={updateSet} addSet={addSet} removeSet={removeSet}
                     updateRestSeconds={updateRestSeconds} startTimer={startTimer} stopTimer={stopTimer}
@@ -1290,6 +1312,7 @@ export function LogWorkout() {
                                 key={set.id}
                                 set={set} setIndex={setIdx}
                                 prevSet={prevLookup[ex.name]?.[setIdx]}
+                                histMax={histMaxes[ex.name]}
                                 exerciseType={wuExType} showRPE={false}
                                 canRemove={false}
                                 onChange={updated => updateSet(exIdx, setIdx, updated)}
@@ -1342,6 +1365,7 @@ export function LogWorkout() {
                             key={set.id}
                             set={set} setIndex={setIdx}
                             prevSet={prevLookup[ex.name]?.[setIdx]}
+                            histMax={histMaxes[ex.name]}
                             exerciseType={ssExType} showRPE={showRPE}
                             canRemove={ex.sets.length > 1}
                             onChange={updated => updateSet(exIdx, setIdx, updated)}
