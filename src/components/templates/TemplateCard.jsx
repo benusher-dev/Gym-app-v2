@@ -12,7 +12,7 @@ export function TemplateCard({ template, onEdit, onDelete, onSelect, compact = f
           {!compact && (
             <div className="mt-2 flex flex-wrap gap-1">
               {template.exercises.slice(0, 3).map(ex => (
-                <span key={ex.id} className="text-xs bg-indigo-50 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 rounded-lg px-2 py-0.5 font-medium">
+                <span key={ex.id} className="text-xs bg-[rgba(123,164,196,0.1)] dark:bg-indigo-900/40 text-[#5a7a96] dark:text-indigo-300 rounded-lg px-2 py-0.5 font-medium">
                   {ex.name}
                 </span>
               ))}
@@ -29,7 +29,7 @@ export function TemplateCard({ template, onEdit, onDelete, onSelect, compact = f
             {onEdit && (
               <button
                 onClick={e => { e.stopPropagation(); onEdit() }}
-                className="p-2 text-gray-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 rounded-lg transition-colors"
+                className="p-2 text-gray-400 hover:text-[#7ba4c4] hover:bg-[rgba(123,164,196,0.08)] dark:hover:bg-indigo-900/30 rounded-lg transition-colors"
               >
                 <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                   <path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7" />

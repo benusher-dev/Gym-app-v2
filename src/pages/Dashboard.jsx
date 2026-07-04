@@ -138,9 +138,9 @@ function ImportPreviewSheet({ preview, onConfirm, onCancel }) {
           ) : (
             <div className="flex flex-col gap-2 mb-4">
               {rows.map(r => (
-                <div key={r.label} className="flex items-center justify-between bg-gray-50 dark:bg-gray-700/50 rounded-xl px-4 py-2.5">
+                <div key={r.label} className="flex items-center justify-between bg-[rgba(123,164,196,0.07)] dark:bg-gray-700/50 rounded-xl px-4 py-2.5">
                   <span className="text-sm text-gray-700 dark:text-gray-200">{r.label}</span>
-                  <span className="text-sm font-bold text-indigo-600 dark:text-amber-400">+{r.count}</span>
+                  <span className="text-sm font-bold text-[#7ba4c4] dark:text-amber-400">+{r.count}</span>
                 </div>
               ))}
               <p className="text-[11px] text-gray-400 dark:text-gray-500 mt-1 px-1">
@@ -158,7 +158,7 @@ function ImportPreviewSheet({ preview, onConfirm, onCancel }) {
             <button
               onClick={onConfirm}
               disabled={rows.length === 0}
-              className="flex-1 py-3 rounded-xl text-sm font-bold bg-indigo-600 dark:bg-amber-600 text-white disabled:opacity-40"
+              className="flex-1 py-3 rounded-xl text-sm font-bold bg-[#7ba4c4] dark:bg-amber-600 text-white disabled:opacity-40"
             >
               Merge &amp; Reload
             </button>
@@ -195,17 +195,17 @@ function AssignSheet({ day, templates, current, onAssign, onClose }) {
               <h3 className="text-base font-bold text-gray-900 dark:text-white">{DAY_FULL[day]}</h3>
               <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Tap to select — stack multiple workouts</p>
             </div>
-            <button onClick={handleDone} className="px-4 py-1.5 bg-indigo-600 dark:bg-amber-600 text-white text-sm font-semibold rounded-xl">Done</button>
+            <button onClick={handleDone} className="px-4 py-1.5 bg-[#7ba4c4] dark:bg-amber-600 text-white text-sm font-semibold rounded-xl">Done</button>
           </div>
         </div>
         <div className="overflow-y-auto max-h-96">
           <button
             onClick={handleRest}
-            className={`w-full text-left px-5 py-3 flex items-center gap-3 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors ${!selected.length ? 'text-indigo-600 dark:text-amber-500' : 'text-gray-500 dark:text-gray-400'}`}
+            className={`w-full text-left px-5 py-3 flex items-center gap-3 hover:bg-[rgba(123,164,196,0.05)] dark:hover:bg-gray-700 transition-colors ${!selected.length ? 'text-[#7ba4c4] dark:text-amber-500' : 'text-gray-500 dark:text-gray-400'}`}
           >
-            <div className="w-8 h-8 rounded-xl bg-gray-100 dark:bg-gray-700 flex items-center justify-center text-sm">😴</div>
+            <div className="w-8 h-8 rounded-xl bg-[rgba(123,164,196,0.08)] dark:bg-gray-700 flex items-center justify-center text-sm">😴</div>
             <span className="text-sm font-medium dark:text-gray-200">Rest Day</span>
-            {!selected.length && <svg className="h-4 w-4 ml-auto text-indigo-500 dark:text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12" /></svg>}
+            {!selected.length && <svg className="h-4 w-4 ml-auto text-[#7ba4c4] dark:text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12" /></svg>}
           </button>
           {templates.map(t => {
             const isSelected = selected.includes(t.id)
@@ -213,12 +213,12 @@ function AssignSheet({ day, templates, current, onAssign, onClose }) {
               <button
                 key={t.id}
                 onClick={() => toggle(t.id)}
-                className={`w-full text-left px-5 py-3 flex items-center gap-3 hover:bg-indigo-50 dark:hover:bg-amber-900/30 transition-colors ${isSelected ? 'text-indigo-600 dark:text-amber-500' : 'text-gray-800 dark:text-gray-200'}`}
+                className={`w-full text-left px-5 py-3 flex items-center gap-3 hover:bg-[rgba(123,164,196,0.06)] dark:hover:bg-amber-900/30 transition-colors ${isSelected ? 'text-[#5a7a96] dark:text-amber-500' : 'text-gray-800 dark:text-gray-200'}`}
               >
-                <div className={`w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 transition-colors ${isSelected ? 'bg-indigo-600 dark:bg-amber-600' : 'bg-indigo-100 dark:bg-amber-900/40'}`}>
+                <div className={`w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0 transition-colors ${isSelected ? 'bg-[#7ba4c4] dark:bg-amber-600' : 'bg-[rgba(123,164,196,0.12)] dark:bg-amber-900/40'}`}>
                   {isSelected
                     ? <svg className="h-4 w-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12" /></svg>
-                    : <svg className="h-4 w-4 text-indigo-600 dark:text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 8h1a4 4 0 010 8h-1M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8zM6 1v3M10 1v3M14 1v3" /></svg>
+                    : <svg className="h-4 w-4 text-[#7ba4c4] dark:text-amber-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M18 8h1a4 4 0 010 8h-1M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8zM6 1v3M10 1v3M14 1v3" /></svg>
                   }
                 </div>
                 <div className="flex-1 min-w-0">
@@ -275,7 +275,7 @@ function BodyWeightCard({ onNavigate }) {
   }
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-4">
+    <div className="bg-[rgba(123,164,196,0.05)] dark:bg-gray-800 rounded-2xl p-4">
       {/* Header row */}
       <div className="flex items-center justify-between mb-3">
         <button onClick={onNavigate} className="flex items-center gap-2 hover:opacity-70 transition-opacity">
@@ -388,12 +388,12 @@ function BodyWeightCard({ onNavigate }) {
           value={input}
           onChange={e => setInput(e.target.value)}
           onKeyDown={e => e.key === 'Enter' && handleLog()}
-          className="flex-1 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 dark:text-white dark:placeholder-gray-500 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-sky-400 dark:focus:ring-amber-500"
+          className="flex-1 rounded-xl bg-white dark:bg-gray-700 dark:text-white dark:placeholder-gray-500 shadow-[0_1px_3px_rgba(0,0,0,0.08)] px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#7ba4c4]/40"
         />
         <button
           onClick={handleLog}
           disabled={!input}
-          className="px-4 py-2 rounded-xl text-sm font-semibold bg-sky-500 dark:bg-amber-600 text-white hover:bg-sky-600 dark:hover:bg-amber-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+          className="px-4 py-2 rounded-xl text-sm font-semibold bg-[#7ba4c4] dark:bg-amber-600 text-white hover:bg-[#6b8fae] dark:hover:bg-amber-700 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
         >
           Log
         </button>
@@ -457,10 +457,10 @@ function ScheduleStrip({ schedule, templates, today, onAssignDay }) {
               onClick={() => onAssignDay(dayKey)}
               className={`flex-shrink-0 flex flex-col items-center gap-1 py-2 px-2 rounded-xl transition-colors w-12 ${
                 isToday
-                  ? hasTmpls ? 'bg-indigo-600 dark:bg-amber-600 text-white' : 'bg-indigo-50 dark:bg-amber-900/30 border-2 border-indigo-300 dark:border-amber-600 text-indigo-600 dark:text-amber-400'
+                  ? hasTmpls ? 'bg-[#7ba4c4] dark:bg-amber-600 text-white' : 'bg-[rgba(123,164,196,0.1)] dark:bg-amber-900/30 border-2 border-[#7ba4c4]/40 dark:border-amber-600 text-[#5a7a96] dark:text-amber-400'
                   : isPast
-                  ? 'opacity-40 ' + (hasTmpls ? 'bg-gray-100 dark:bg-gray-700 text-gray-500' : 'bg-gray-50 dark:bg-gray-800 text-gray-400 border border-dashed border-gray-200 dark:border-gray-600')
-                  : hasTmpls ? 'bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-indigo-50 dark:hover:bg-amber-900/30' : 'bg-gray-50 dark:bg-gray-800 text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 border border-dashed border-gray-200 dark:border-gray-600'
+                  ? 'opacity-40 ' + (hasTmpls ? 'bg-[rgba(123,164,196,0.08)] dark:bg-gray-700 text-gray-500' : 'bg-[rgba(123,164,196,0.03)] dark:bg-gray-800 text-gray-400 border border-dashed border-[rgba(123,164,196,0.2)] dark:border-gray-600')
+                  : hasTmpls ? 'bg-[rgba(123,164,196,0.08)] dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-[rgba(123,164,196,0.12)]' : 'bg-[rgba(123,164,196,0.03)] dark:bg-gray-800 text-gray-400 hover:bg-[rgba(123,164,196,0.07)] border border-dashed border-[rgba(123,164,196,0.15)] dark:border-gray-600'
               }`}
             >
               <span className="text-[10px] font-bold uppercase">{DAY_LABELS[dayKey]}</span>
@@ -469,8 +469,8 @@ function ScheduleStrip({ schedule, templates, today, onAssignDay }) {
               </span>
               {hasTmpls ? (
                 <div className="relative w-6 h-6">
-                  <div className={`w-6 h-6 rounded-lg flex items-center justify-center ${isToday ? 'bg-white/20' : 'bg-indigo-100 dark:bg-amber-900/40'}`}>
-                    <svg className={`h-3.5 w-3.5 ${isToday ? 'text-white' : 'text-indigo-600 dark:text-amber-400'}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                  <div className={`w-6 h-6 rounded-lg flex items-center justify-center ${isToday ? 'bg-white/20' : 'bg-[rgba(123,164,196,0.15)] dark:bg-amber-900/40'}`}>
+                    <svg className={`h-3.5 w-3.5 ${isToday ? 'text-white' : 'text-[#7ba4c4] dark:text-amber-400'}`} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                       <path d="M18 8h1a4 4 0 010 8h-1M2 8h16v9a4 4 0 01-4 4H6a4 4 0 01-4-4V8zM6 1v3M10 1v3M14 1v3" />
                     </svg>
                   </div>
@@ -606,8 +606,8 @@ export function Dashboard() {
                 { value: stats.monthDays, label: 'Days / mo' },
                 { value: streak, label: 'Day streak', suffix: streak > 0 ? '🔥' : '' },
               ].map(({ value, label, suffix }) => (
-                <div key={label} className="bg-white dark:bg-gray-800 rounded-2xl p-3 shadow-sm border border-gray-100 dark:border-gray-700 text-center">
-                  <p className="text-xl font-bold text-indigo-600 dark:text-amber-400">
+                <div key={label} className="bg-[rgba(123,164,196,0.07)] dark:bg-gray-800 rounded-2xl p-3 text-center">
+                  <p className="text-xl font-bold text-[#7ba4c4] dark:text-amber-400">
                     {value}{suffix && <span className="text-base ml-0.5">{suffix}</span>}
                   </p>
                   <p className="text-[10px] text-gray-500 dark:text-gray-400 mt-0.5 leading-tight">{label}</p>
@@ -624,7 +624,7 @@ export function Dashboard() {
             <div className="flex items-center justify-between mb-3">
               <p className="text-sm font-semibold text-gray-900 dark:text-white">Recent Workouts</p>
               {sessions.length > 3 && (
-                <button onClick={() => setActivePage('history')} className="text-xs text-indigo-600 dark:text-amber-400 font-medium hover:underline">
+                <button onClick={() => setActivePage('history')} className="text-xs text-[#7ba4c4] dark:text-amber-400 font-medium hover:underline">
                   View all
                 </button>
               )}
@@ -642,13 +642,13 @@ export function Dashboard() {
           </div>
 
           {/* Backup / restore */}
-          <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-4">
+          <div className="bg-[rgba(123,164,196,0.05)] dark:bg-gray-800 rounded-2xl p-4">
             <p className="text-sm font-semibold text-gray-900 dark:text-white mb-1">Data Backup</p>
             <p className="text-xs text-gray-500 dark:text-gray-400 mb-3">Export your workouts, sessions, and settings as a JSON file, or restore from a previous backup.</p>
             <div className="flex gap-2">
               <button
                 onClick={exportData}
-                className="flex-1 py-2 rounded-xl text-xs font-semibold bg-indigo-600 dark:bg-amber-600 text-white hover:bg-indigo-700 dark:hover:bg-amber-700 transition-colors"
+                className="flex-1 py-2 rounded-xl text-xs font-semibold bg-[#7ba4c4] dark:bg-amber-600 text-white hover:bg-[#6b8fae] dark:hover:bg-amber-700 transition-colors"
               >
                 Export Backup
               </button>

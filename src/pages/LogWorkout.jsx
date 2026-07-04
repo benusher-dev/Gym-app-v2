@@ -25,7 +25,7 @@ function getExerciseType(ex) {
 }
 
 const TYPE_META = {
-  weight:    { label: 'Weights',     cls: 'text-indigo-600 bg-indigo-50 dark:bg-indigo-900/30' },
+  weight:    { label: 'Weights',     cls: 'text-[#5a7a96] bg-[rgba(123,164,196,0.12)] dark:bg-indigo-900/30 dark:text-indigo-300' },
   bw:        { label: 'Bodyweight',  cls: 'text-emerald-600 bg-emerald-50 dark:bg-emerald-900/30' },
   hold:      { label: '⏱ Hold',      cls: 'text-violet-600 bg-violet-50 dark:bg-violet-900/30' },
   cardio:    { label: '🏃 Cardio',   cls: 'text-sky-500 bg-sky-50 dark:bg-sky-900/30' },
@@ -121,8 +121,9 @@ function SetHeader({ exerciseType, showRPE }) {
 
 // ── Set row ───────────────────────────────────────────────────────────────────
 function SetRow({ set, setIndex, prevSet, exerciseType, showRPE, canRemove, onChange, onToggleDone, onRemove }) {
-  const borderCls = set.done ? 'border-emerald-200 dark:border-emerald-800' : 'border-gray-200 dark:border-gray-600'
-  const inputCls = `rounded-lg border ${borderCls} bg-white dark:bg-gray-700 dark:text-white px-2 py-1.5 text-sm text-center focus:outline-none focus:ring-2 focus:ring-indigo-500 w-full`
+  const inputCls = set.done
+    ? 'rounded-lg bg-emerald-50 dark:bg-emerald-900/20 text-emerald-700 dark:text-emerald-300 px-2 py-1.5 text-sm text-center focus:outline-none w-full'
+    : 'rounded-lg bg-white dark:bg-gray-700 dark:text-white shadow-[0_1px_3px_rgba(0,0,0,0.08)] px-2 py-1.5 text-sm text-center focus:outline-none focus:ring-2 focus:ring-[#7ba4c4]/40 w-full'
   const dimmed = set.done ? 'opacity-60' : ''
 
   return (
@@ -210,22 +211,22 @@ function RestTimerRow({ timerId, restSeconds, onChangeRest, timer, onStart, onSt
     const progress = timer.remaining / timer.total
     const circumference = 2 * Math.PI * 10
     return (
-      <div className="mt-3 flex items-center justify-between bg-indigo-50 dark:bg-amber-900/30 border border-indigo-100 dark:border-amber-800/60 rounded-xl px-3 py-2">
+      <div className="mt-3 flex items-center justify-between bg-[rgba(123,164,196,0.08)] dark:bg-amber-900/30 rounded-xl px-3 py-2">
         <div className="flex items-center gap-3">
-          <div className="flex-shrink-0 text-indigo-500 dark:text-amber-500">
+          <div className="flex-shrink-0 text-[#7ba4c4] dark:text-amber-500">
             <svg width="28" height="28" viewBox="0 0 28 28">
-              <circle cx="14" cy="14" r="10" fill="none" strokeWidth="3" className="stroke-indigo-100 dark:stroke-amber-900" />
+              <circle cx="14" cy="14" r="10" fill="none" strokeWidth="3" stroke="rgba(123,164,196,0.2)" />
               <circle cx="14" cy="14" r="10" fill="none" stroke="currentColor" strokeWidth="3"
                 strokeDasharray={circumference} strokeDashoffset={circumference * (1 - progress)}
                 strokeLinecap="round" transform="rotate(-90 14 14)" />
             </svg>
           </div>
-          <span className="text-indigo-700 dark:text-amber-300 font-bold text-xl tabular-nums leading-none">
+          <span className="text-[#5a7a96] dark:text-amber-300 font-bold text-xl tabular-nums leading-none">
             {formatCountdown(timer.remaining)}
           </span>
-          <span className="text-indigo-400 dark:text-amber-500 text-xs">rest</span>
+          <span className="text-[#7ba4c4]/70 dark:text-amber-500 text-xs">rest</span>
         </div>
-        <button onClick={onStop} className="text-xs text-indigo-500 dark:text-amber-400 font-semibold hover:text-indigo-700 dark:hover:text-amber-300 px-2 py-1 rounded-lg hover:bg-indigo-100 dark:hover:bg-amber-900/50 transition-colors">
+        <button onClick={onStop} className="text-xs text-[#7ba4c4] dark:text-amber-400 font-semibold hover:text-[#5a7a96] px-2 py-1 rounded-lg hover:bg-[rgba(123,164,196,0.1)] transition-colors">
           Skip
         </button>
       </div>
@@ -256,15 +257,15 @@ function RestTimerRow({ timerId, restSeconds, onChangeRest, timer, onStart, onSt
             onClick={() => onChangeRest(timerId, p.seconds)}
             className={`flex-shrink-0 px-2 py-1 rounded-lg text-xs font-semibold transition-colors ${
               restSeconds === p.seconds
-                ? 'bg-indigo-100 dark:bg-amber-900/50 text-indigo-700 dark:text-amber-300'
-                : 'bg-gray-100 dark:bg-gray-700 text-gray-500 dark:text-gray-400 hover:bg-gray-200 dark:hover:bg-gray-600'
+                ? 'bg-[rgba(123,164,196,0.15)] dark:bg-amber-900/50 text-[#5a7a96] dark:text-amber-300'
+                : 'bg-[rgba(0,0,0,0.04)] dark:bg-gray-700 text-gray-500 dark:text-gray-400 hover:bg-[rgba(123,164,196,0.1)] dark:hover:bg-gray-600'
             }`}
           >
             {p.label}
           </button>
         ))}
       </div>
-      <button onClick={() => onStart(timerId, restSeconds)} className="flex-shrink-0 px-3 py-1.5 text-xs font-semibold text-white bg-indigo-500 dark:bg-amber-600 hover:bg-indigo-600 dark:hover:bg-amber-700 rounded-lg transition-colors">
+      <button onClick={() => onStart(timerId, restSeconds)} className="flex-shrink-0 px-3 py-1.5 text-xs font-semibold text-white bg-[#7ba4c4] dark:bg-amber-600 hover:bg-[#6b8fae] dark:hover:bg-amber-700 rounded-lg transition-colors">
         Start
       </button>
     </div>
@@ -302,7 +303,7 @@ function ExerciseCard({ ex, exIdx, prevSets, timer, showRPE, autoRest, updateSet
   // Compact warm-up card — no rest timer, no add-set, tighter padding
   if (isWarmup) {
     return (
-      <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-3">
+      <div className="bg-[rgba(123,164,196,0.05)] dark:bg-gray-800 rounded-2xl p-3">
         <div className="flex items-center gap-2 mb-1.5">
           <p className="font-semibold text-gray-900 dark:text-white flex-1 text-sm">{ex.name}</p>
           <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-red-100 text-red-700">Warm-up</span>
@@ -329,7 +330,7 @@ function ExerciseCard({ ex, exIdx, prevSets, timer, showRPE, autoRest, updateSet
   return (
     <div
       data-exidx={exIdx}
-      className={`bg-white dark:bg-gray-800 rounded-2xl border shadow-sm p-4 transition-colors ${isDragOver ? 'border-[#7ba4c4] dark:border-amber-500' : 'border-gray-100 dark:border-gray-700'}`}
+      className={`bg-[rgba(123,164,196,0.05)] dark:bg-gray-800 rounded-2xl p-4 transition-all ${isDragOver ? 'ring-2 ring-[#7ba4c4]/40' : ''}`}
     >
       <div className="mb-3">
         <div className="flex items-center gap-2">
@@ -356,7 +357,7 @@ function ExerciseCard({ ex, exIdx, prevSets, timer, showRPE, autoRest, updateSet
           onRemove={() => removeSet(exIdx, setIdx)}
         />
       ))}
-      <button onClick={() => addSet(exIdx)} className="mt-2 w-full py-1.5 border border-dashed border-gray-200 dark:border-gray-600 rounded-lg text-xs text-gray-400 hover:text-indigo-600 hover:border-indigo-300 dark:hover:border-indigo-600 transition-colors">
+      <button onClick={() => addSet(exIdx)} className="mt-2 w-full py-1.5 border border-dashed border-[rgba(123,164,196,0.25)] dark:border-gray-600 rounded-lg text-xs text-gray-400 hover:text-[#7ba4c4] hover:border-[#7ba4c4]/40 transition-colors">
         + Add Set
       </button>
       <RestTimerRow timerId={timerId} restSeconds={ex.restSeconds} onChangeRest={updateRestSeconds} timer={timer} onStart={startTimer} onStop={stopTimer} />
@@ -1230,7 +1231,7 @@ export function LogWorkout() {
         <div className="flex-1 overflow-y-auto px-4 py-4 max-w-lg mx-auto w-full">
           <div className="flex flex-col gap-4 pb-6">
             {hasPrev && (
-              <div className="flex items-center gap-1.5 px-3 py-2 bg-gray-50 dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700">
+              <div className="flex items-center gap-1.5 px-3 py-2 bg-[rgba(123,164,196,0.05)] dark:bg-gray-800 rounded-xl">
                 <svg className="h-3.5 w-3.5 text-gray-400 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10" /><polyline points="12 6 12 12 16 14" /></svg>
                 {refSessionIdx === 0
                   ? <p className="text-xs text-gray-400 dark:text-gray-500">Small numbers show your last session — swipe <strong className="font-semibold">Wk</strong> to browse history</p>
@@ -1260,7 +1261,7 @@ export function LogWorkout() {
               // Warm-up group
               if (group.type === 'warmup') {
                 return (
-                  <div key="warmup-group" className="border-l-4 border-red-400 rounded-r-2xl bg-white dark:bg-gray-800 shadow-sm overflow-hidden">
+                  <div key="warmup-group" className="border-l-4 border-red-400 rounded-r-2xl bg-[rgba(123,164,196,0.05)] dark:bg-gray-800 overflow-hidden">
                     <div className="flex items-center gap-2 px-4 pt-3 pb-2 bg-red-50/60 dark:bg-red-900/20">
                       <div className="flex gap-0.5 items-center">
                         <div className="h-3.5 w-1 bg-red-500 rounded-full" /><div className="h-3.5 w-1 bg-red-500 rounded-full" />
@@ -1308,14 +1309,14 @@ export function LogWorkout() {
               const ssTimerId = `ss_${group.supersetId}`
               const ssRestSeconds = group.items[0]?.ex.restSeconds ?? 90
               return (
-                <div key={group.supersetId} className="border-l-4 border-indigo-400 rounded-r-2xl bg-white dark:bg-gray-800 shadow-sm overflow-hidden">
-                  <div className="flex items-center gap-2 px-4 pt-3 pb-2 bg-indigo-50/60 dark:bg-indigo-900/20">
+                <div key={group.supersetId} className="border-l-4 border-[#7ba4c4] rounded-r-2xl bg-[rgba(123,164,196,0.05)] dark:bg-gray-800 overflow-hidden">
+                  <div className="flex items-center gap-2 px-4 pt-3 pb-2 bg-[rgba(123,164,196,0.08)] dark:bg-indigo-900/20">
                     <div className="flex gap-0.5 items-center">
-                      <div className="h-3.5 w-1 bg-indigo-500 rounded-full" /><div className="h-3.5 w-1 bg-indigo-500 rounded-full" />
+                      <div className="h-3.5 w-1 bg-[#7ba4c4] rounded-full" /><div className="h-3.5 w-1 bg-[#7ba4c4] rounded-full" />
                     </div>
-                    <span className="text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-widest">Superset</span>
-                    <span className="text-indigo-300 text-xs">·</span>
-                    <span className="text-xs text-indigo-400">{group.items.length} exercises</span>
+                    <span className="text-xs font-bold text-[#5a7a96] dark:text-indigo-400 uppercase tracking-widest">Superset</span>
+                    <span className="text-[#7ba4c4]/50 text-xs">·</span>
+                    <span className="text-xs text-[#7ba4c4]/70">{group.items.length} exercises</span>
                   </div>
                   <div className="flex flex-col divide-y divide-gray-100 dark:divide-gray-700">
                     {group.items.map(({ ex, i: exIdx }) => {
@@ -1351,7 +1352,7 @@ export function LogWorkout() {
                             onRemove={() => removeSet(exIdx, setIdx)}
                           />
                         ))}
-                        <button onClick={() => addSet(exIdx)} className="mt-2 w-full py-1.5 border border-dashed border-gray-200 dark:border-gray-600 rounded-lg text-xs text-gray-400 hover:text-indigo-600 hover:border-indigo-300 transition-colors">
+                        <button onClick={() => addSet(exIdx)} className="mt-2 w-full py-1.5 border border-dashed border-[rgba(123,164,196,0.25)] dark:border-gray-600 rounded-lg text-xs text-gray-400 hover:text-[#7ba4c4] hover:border-[#7ba4c4]/40 transition-colors">
                           + Add Set
                         </button>
                       </div>
@@ -1365,20 +1366,20 @@ export function LogWorkout() {
               )
             })}
 
-            <div className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-4">
+            <div className="bg-[rgba(123,164,196,0.05)] dark:bg-gray-800 rounded-2xl p-4">
               <label className="text-sm font-medium text-gray-700 dark:text-gray-300 block mb-2">Notes (optional)</label>
               <textarea
                 value={notes}
                 onChange={e => setNotes(e.target.value)}
                 placeholder="How did it go?"
                 rows={3}
-                className="w-full rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 dark:text-white dark:placeholder-gray-500 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
+                className="w-full rounded-xl bg-white dark:bg-gray-700 dark:text-white dark:placeholder-gray-500 shadow-[0_1px_3px_rgba(0,0,0,0.08)] px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#7ba4c4]/40 resize-none"
               />
             </div>
 
             <button
               onClick={() => setShowAddExercise(true)}
-              className="w-full flex items-center justify-center gap-2 py-3 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-2xl text-sm font-semibold text-gray-500 dark:text-gray-400 hover:border-indigo-400 dark:hover:border-amber-500 hover:text-indigo-600 dark:hover:text-amber-500 transition-colors"
+              className="w-full flex items-center justify-center gap-2 py-3 border-2 border-dashed border-[rgba(123,164,196,0.3)] dark:border-gray-600 rounded-2xl text-sm font-semibold text-gray-400 dark:text-gray-400 hover:border-[#7ba4c4] dark:hover:border-amber-500 hover:text-[#7ba4c4] dark:hover:text-amber-500 transition-colors"
             >
               <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                 <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />

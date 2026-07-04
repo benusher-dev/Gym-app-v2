@@ -7,7 +7,7 @@ export function PageHeader({ title, action, accent = false }) {
     <header className={`sticky top-0 z-30 flex-shrink-0 ${
       accent
         ? 'bg-gradient-to-r from-sky-400 to-blue-500 dark:from-amber-600 dark:to-orange-700 shadow-lg shadow-sky-400/20 dark:shadow-amber-700/20'
-        : 'bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm border-b border-gray-100 dark:border-gray-700'
+        : 'bg-[#f7f9fb]/95 dark:bg-gray-900/95 backdrop-blur-sm border-b border-[rgba(123,164,196,0.12)] dark:border-gray-700'
     }`}>
       <div className="flex items-center justify-between h-14 px-4 max-w-lg mx-auto gap-2">
         <h1 className={`text-lg font-bold truncate min-w-0 ${accent ? 'text-white' : 'text-gray-900 dark:text-white'}`}>{title}</h1>
