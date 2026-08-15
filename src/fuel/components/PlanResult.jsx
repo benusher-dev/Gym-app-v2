@@ -94,7 +94,7 @@ export function PlanResult({
       {/* ── Targets ── */}
       <div className="rounded-2xl overflow-hidden bg-steel-600 text-white">
         <div className="px-5 py-6">
-          <p className="font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-white/55">
+          <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-white/55">
             Your Daily Target
           </p>
           <p className="font-display text-[52px] font-bold leading-none mt-2 tabular-nums">
@@ -115,7 +115,7 @@ export function PlanResult({
                 <p className="font-display text-2xl font-bold leading-none tabular-nums">
                   {v}<span className="text-[12px] font-body font-medium text-white/50 ml-0.5">g</span>
                 </p>
-                <p className="font-mono text-[9px] font-bold uppercase tracking-[0.12em] text-white/55 mt-1.5">
+                <p className="text-[9px] font-bold uppercase tracking-[0.12em] text-white/55 mt-1.5">
                   {k}
                 </p>
               </div>
@@ -215,7 +215,7 @@ export function PlanResult({
               key={d.label}
               type="button"
               onClick={() => setDay(i)}
-              className={`flex-1 py-2 rounded-md font-mono text-[11px] font-bold uppercase tracking-[0.1em] transition-colors ${
+              className={`flex-1 py-2 rounded-md text-[11px] font-bold uppercase tracking-[0.1em] transition-colors ${
                 day === i ? 'bg-white text-steel-600 shadow-sm' : 'text-neutral-500 hover:text-neutral-700'
               }`}
             >
@@ -243,7 +243,7 @@ export function PlanResult({
 
         <div className="rounded-xl bg-[#3d4f5e] text-white px-5 py-4 flex items-end justify-between">
           <div>
-            <p className="font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-white/50">
+            <p className="text-[10px] font-bold uppercase tracking-[0.14em] text-white/50">
               Estimated Weekly Cost
             </p>
             <p className="font-display text-[34px] font-bold leading-none mt-1.5 tabular-nums">

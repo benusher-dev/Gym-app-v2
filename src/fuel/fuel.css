@@ -22,11 +22,11 @@
 @layer components {
   /* Small letterspaced uppercase section label */
   .lbl {
-    @apply font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-steel-600;
+    @apply text-[10px] font-bold uppercase tracking-[0.12em] text-steel-700;
   }
 
   .lbl-muted {
-    @apply font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-neutral-400;
+    @apply text-[10px] font-bold uppercase tracking-[0.12em] text-[#94a3b8];
   }
 
   /* Selectable pill */

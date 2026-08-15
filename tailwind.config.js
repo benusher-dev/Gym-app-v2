@@ -31,10 +31,10 @@ export default {
           900: '#47617a',
         },
       },
+      // One family, matching the workout tracker's system stack — no webfont.
       fontFamily: {
-        display: ['Oswald', 'Haettenschweiler', 'Impact', 'sans-serif'],
-        body: ['Inter', 'system-ui', '-apple-system', 'Segoe UI', 'sans-serif'],
-        mono: ['ui-monospace', 'SFMono-Regular', 'SF Mono', 'Menlo', 'monospace'],
+        display: ['ui-sans-serif', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'sans-serif'],
+        body: ['ui-sans-serif', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'sans-serif'],
       },
     },
   },

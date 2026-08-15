@@ -92,7 +92,7 @@ export function FuelPlan() {
         <span className="inline-block rounded-full border border-steel-200 bg-steel-50 px-4 py-1.5 lbl">
           Fuel Planner
         </span>
-        <h1 className="font-display text-[34px] leading-[1.05] font-bold uppercase tracking-tight mt-4 text-neutral-900">
+        <h1 className="font-display text-[34px] leading-[1.05] font-bold tracking-tight mt-4 text-neutral-900">
           Create Your<br />Fuel Plan
         </h1>
         <p className="text-[14px] text-neutral-500 leading-relaxed mt-3 max-w-xs mx-auto">

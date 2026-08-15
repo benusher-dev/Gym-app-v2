@@ -43,7 +43,7 @@ function Block({ block }) {
               {i < block.items.length - 1 && <span className="w-px flex-1 bg-steel-200 my-1" />}
             </div>
             <div className={i < block.items.length - 1 ? 'pb-5' : ''}>
-              <p className="font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-steel-600">
+              <p className="text-[10px] font-bold uppercase tracking-[0.12em] text-steel-600">
                 {it.when}
               </p>
               <p className="font-display text-[16px] font-semibold text-neutral-900 leading-tight mt-1">
@@ -63,7 +63,7 @@ function Block({ block }) {
 export function Content({ doc }) {
   return (
     <div className="px-5 pb-16 pt-6 max-w-lg mx-auto">
-      <h1 className="font-display text-[30px] leading-[1.1] font-bold uppercase tracking-tight text-neutral-900">
+      <h1 className="font-display text-[30px] leading-[1.1] font-bold tracking-tight text-neutral-900">
         {doc.title}
       </h1>
       <p className="text-[14px] text-neutral-500 leading-relaxed mt-3">{doc.blurb}</p>

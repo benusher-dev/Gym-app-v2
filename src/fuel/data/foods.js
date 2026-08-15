@@ -240,7 +240,7 @@ export const FOODS = {
   avocado: {
     name: 'Avocado', cat: 'fat', diet: null, avoid: [],
     per100: { kcal: 160, p: 2, c: 9, f: 15 }, gbp: 4, prep: 0, step: 25,
-    min: 50, max: 150, cooked: 1,
+    min: 50, max: 100, cooked: 1,
   },
   cheddar: {
     name: 'Reduced-fat cheddar', cat: 'fat', diet: 'dairy', avoid: ['dairy'],

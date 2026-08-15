@@ -14,7 +14,7 @@
 
 export const GOALS = [
   { id: 'mass', label: 'Gain Mass & Size, Keep Speed', shift: 0.15 },
-  { id: 'recomp', label: 'Build Muscle & Lose Fat', shift: -0.12 },
+  { id: 'recomp', label: 'Build Muscle & Lose Fat', shift: -0.2 },
   { id: 'strength', label: 'Speed, Strength & Size', shift: 0.07 },
   { id: 'conditioning', label: 'Fitness & Conditioning', shift: 0 },
 ]
@@ -81,7 +81,7 @@ export function buildTargets(input) {
       `so this plan runs a small one rather than the deficit that goal usually implies. Expect a slower, leaner gain.`
     )
   } else if (delta < -2 && shift > 0) {
-    shift = -0.1
+    shift = -0.18
     notes.push(
       `Your goal weight is ${Math.abs(delta).toFixed(1)} kg below where you are now, so this plan runs a deficit. ` +
       `Protein is held high to keep the size and speed you already have.`

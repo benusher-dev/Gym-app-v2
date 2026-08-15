@@ -47,7 +47,7 @@ export default function App() {
             <p className="font-display text-[15px] font-bold uppercase tracking-[0.06em] text-neutral-900 leading-none">
               {BRAND.name}
             </p>
-            <p className="font-mono text-[9px] font-bold uppercase tracking-[0.14em] text-neutral-400 mt-1">
+            <p className="text-[9px] font-bold uppercase tracking-[0.14em] text-neutral-400 mt-1">
               {BRAND.sub}
             </p>
           </div>
@@ -66,7 +66,7 @@ export default function App() {
               }`}
             >
               <Icon className="h-3.5 w-3.5" />
-              <span className="font-mono text-[10px] font-bold uppercase tracking-[0.1em]">
+              <span className="text-[10px] font-bold uppercase tracking-[0.1em]">
                 {label}
               </span>
             </button>
