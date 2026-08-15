@@ -237,7 +237,7 @@ export function PlateCalculator({ onClose, initialTab = 'plates' }) {
                         >
                           <div className="flex items-center gap-3">
                             <span className={`font-bold w-8 ${isMax ? 'text-white' : 'text-[#5a7a96] dark:text-indigo-400'}`}>{pct}%</span>
-                            <span className={isMax ? 'text-indigo-100' : 'text-gray-400 dark:text-gray-500'}>~{RM_REPS[idx]} rep{RM_REPS[idx] !== 1 ? 's' : ''}</span>
+                            <span className={isMax ? 'text-white/70' : 'text-gray-400 dark:text-gray-500'}>~{RM_REPS[idx]} rep{RM_REPS[idx] !== 1 ? 's' : ''}</span>
                           </div>
                           <span className={`font-semibold tabular-nums ${isMax ? 'text-white' : 'text-gray-800 dark:text-gray-200'}`}>{w} kg</span>
                         </div>

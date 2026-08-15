@@ -104,7 +104,7 @@ export function MuscleDiagram({ exercises }) {
       {muscleList.length > 0 ? (
         <div className="mt-3 flex flex-wrap gap-1.5 justify-center">
           {muscleList.map(m => (
-            <span key={m} className="text-xs bg-indigo-100 text-indigo-700 font-semibold px-2 py-0.5 rounded-full">
+            <span key={m} className="text-xs bg-[rgba(123,164,196,0.15)] text-[#5a7a96] font-semibold px-2 py-0.5 rounded-full">
               {m}
             </span>
           ))}

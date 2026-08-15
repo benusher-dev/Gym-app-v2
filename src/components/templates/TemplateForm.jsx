@@ -215,7 +215,7 @@ export function TemplateForm({ initial, onSave, onCancel }) {
             <button
               type="button"
               onClick={addSuperset}
-              className="px-3 py-2.5 border-2 border-dashed border-[#b3cfe1] rounded-xl text-sm text-[#5a7a96] hover:border-indigo-400 hover:bg-[rgba(123,164,196,0.08)] transition-colors font-medium whitespace-nowrap"
+              className="px-3 py-2.5 border-2 border-dashed border-[#b3cfe1] rounded-xl text-sm text-[#5a7a96] hover:border-[#7ba4c4] hover:bg-[rgba(123,164,196,0.08)] transition-colors font-medium whitespace-nowrap"
             >
               ⚡ Superset
             </button>

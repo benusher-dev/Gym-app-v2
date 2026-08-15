@@ -1,6 +1,6 @@
 const variants = {
-  primary: 'bg-[#7ba4c4] dark:bg-amber-600 text-white hover:bg-[#6b8fae] dark:hover:bg-amber-700 active:bg-indigo-800 dark:active:bg-amber-800 disabled:bg-indigo-300 dark:disabled:bg-amber-400',
-  secondary: 'bg-white dark:bg-gray-700 text-[#5a7a96] dark:text-amber-400 border border-[#b3cfe1] dark:border-amber-600/50 hover:bg-[rgba(123,164,196,0.08)] dark:hover:bg-gray-600 active:bg-indigo-100 disabled:opacity-50',
+  primary: 'bg-[#7ba4c4] dark:bg-amber-600 text-white hover:bg-[#6b8fae] dark:hover:bg-amber-700 active:bg-[#5a7a96] dark:active:bg-amber-800 disabled:bg-[#b3cfe1] dark:disabled:bg-amber-400',
+  secondary: 'bg-white dark:bg-gray-700 text-[#5a7a96] dark:text-amber-400 border border-[#b3cfe1] dark:border-amber-600/50 hover:bg-[rgba(123,164,196,0.08)] dark:hover:bg-gray-600 active:bg-[rgba(123,164,196,0.15)] disabled:opacity-50',
   danger: 'bg-red-600 text-white hover:bg-red-700 active:bg-red-800 disabled:opacity-50',
   ghost: 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 active:bg-gray-200 disabled:opacity-50',
 }

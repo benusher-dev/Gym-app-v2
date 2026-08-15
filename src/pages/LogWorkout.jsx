@@ -8,6 +8,7 @@ import { TemplateCard } from '../components/templates/TemplateCard'
 import { WorkoutSummary } from '../components/sessions/WorkoutSummary'
 import { PlateCalculator } from '../components/tools/PlateCalculator'
 import { ExercisePicker } from '../components/templates/ExercisePicker'
+import { Modal } from '../components/ui/Modal'
 import { generateId } from '../utils/dateHelpers'
 
 const REST_PRESETS = [
@@ -290,16 +291,25 @@ function RestTimerRow({ timerId, restSeconds, onChangeRest, timer, onStart, onSt
 }
 
 // ── Exercise card (single) ────────────────────────────────────────────────────
-function ExerciseCard({ ex, exIdx, prevSets, histMax, timer, showRPE, autoRest, updateSet, addSet, removeSet, updateRestSeconds, startTimer, stopTimer, onEditExercise, onDragHandle, isDragOver }) {
+function ExerciseCard({ ex, exIdx, prevSets, histMax, timer, showRPE, autoRest, updateSet, addSet, removeSet, updateRestSeconds, startTimer, stopTimer, onEditExercise, onRemoveExercise, onDragHandle, isDragOver }) {
   const timerId  = `ex_${ex.id}`
   const exType   = getExerciseType(ex)
   const badge    = TYPE_META[exType]
   const isWarmup = ex.category === 'warmup'
 
   const pencilBtn = (
-    <button onClick={() => onEditExercise({ ex, exIdx })} className="p-1 text-gray-300 dark:text-gray-600 hover:text-gray-500 dark:hover:text-gray-400 transition-colors flex-shrink-0" title="Edit exercise">
+    <button onClick={() => onEditExercise({ ex, exIdx })} className="h-9 w-9 flex items-center justify-center text-gray-300 dark:text-gray-600 hover:text-gray-500 dark:hover:text-gray-400 transition-colors flex-shrink-0" title="Edit exercise" aria-label="Edit exercise">
       <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
         <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
+      </svg>
+    </button>
+  )
+
+  const removeBtn = (
+    <button onClick={() => onRemoveExercise({ ex, exIdx })} className="h-9 w-9 flex items-center justify-center text-gray-300 dark:text-gray-600 hover:text-red-500 transition-colors flex-shrink-0" title="Remove exercise" aria-label="Remove exercise">
+      <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <polyline points="3 6 5 6 21 6" />
+        <path d="M19 6l-1 14H6L5 6M10 11v6M14 11v6" />
       </svg>
     </button>
   )
@@ -325,6 +335,7 @@ function ExerciseCard({ ex, exIdx, prevSets, histMax, timer, showRPE, autoRest, 
           <p className="font-semibold text-gray-900 dark:text-white flex-1 text-sm">{ex.name}</p>
           <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-red-100 text-red-700">Warm-up</span>
           {pencilBtn}
+          {removeBtn}
         </div>
         {ex.notes && <p className="text-[11px] text-gray-400 dark:text-gray-500 mb-2">{ex.notes}</p>}
         <SetHeader exerciseType={exType} showRPE={false} />
@@ -356,6 +367,7 @@ function ExerciseCard({ ex, exIdx, prevSets, histMax, timer, showRPE, autoRest, 
           <p className="font-semibold text-gray-900 dark:text-white flex-1">{ex.name}</p>
           {badge.label && <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${badge.cls}`}>{badge.label}</span>}
           {pencilBtn}
+          {removeBtn}
         </div>
         {ex.notes && <p className="text-xs text-gray-400 dark:text-gray-500 mt-1 leading-relaxed">{ex.notes}</p>}
       </div>
@@ -874,6 +886,7 @@ export function LogWorkout() {
   const [showSettings, setShowSettings] = useState(false)
   const [showAddExercise, setShowAddExercise] = useState(false)
   const [editingExercise, setEditingExercise] = useState(null) // { ex, exIdx }
+  const [confirmRemove, setConfirmRemove] = useState(null)   // { ex, exIdx }
   const [autoRest, setAutoRest] = useState(() => {
     try { return JSON.parse(localStorage.getItem('gwt_auto_rest') ?? 'false') } catch { return false }
   })
@@ -1104,6 +1117,19 @@ export function LogWorkout() {
     }
   }
 
+  function removeExercise(exIndex) {
+    setLogExercises(prev => prev.filter((_, i) => i !== exIndex))
+    setConfirmRemove(null)
+  }
+
+  // Only interrupt when there is something to lose. Removing an exercise you
+  // have not touched yet should not cost a confirmation tap mid-session.
+  function requestRemoveExercise({ ex, exIdx }) {
+    const hasData = ex.sets.some(st => st.done || st.reps !== '' || st.weight !== '')
+    if (hasData) setConfirmRemove({ ex, exIdx })
+    else removeExercise(exIdx)
+  }
+
   function handleAddExercise(exercise) {
     setLogExercises(prev => [...prev, {
       id: generateId(),
@@ -1274,6 +1300,7 @@ export function LogWorkout() {
                     updateSet={updateSet} addSet={addSet} removeSet={removeSet}
                     updateRestSeconds={updateRestSeconds} startTimer={startTimer} stopTimer={stopTimer}
                     onEditExercise={setEditingExercise}
+                    onRemoveExercise={requestRemoveExercise}
                     onDragHandle={e => startDrag(e, exIdx)}
                     isDragOver={dragOverIdx === exIdx}
                   />
@@ -1299,9 +1326,15 @@ export function LogWorkout() {
                           <div key={ex.id} className="px-4 py-3">
                             <div className="flex items-center gap-2 mb-1.5">
                               <p className="font-semibold text-gray-900 dark:text-white flex-1 text-sm">{ex.name}</p>
-                              <button onClick={() => setEditingExercise({ ex, exIdx })} className="p-1 text-gray-300 dark:text-gray-600 hover:text-gray-500 dark:hover:text-gray-400 transition-colors" title="Edit exercise">
+                              <button onClick={() => setEditingExercise({ ex, exIdx })} className="h-9 w-9 flex items-center justify-center text-gray-300 dark:text-gray-600 hover:text-gray-500 dark:hover:text-gray-400 transition-colors" title="Edit exercise" aria-label="Edit exercise">
                                 <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                   <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
+                                </svg>
+                              </button>
+                              <button onClick={() => requestRemoveExercise({ ex, exIdx })} className="h-9 w-9 flex items-center justify-center text-gray-300 dark:text-gray-600 hover:text-red-500 transition-colors" title="Remove exercise" aria-label="Remove exercise">
+                                <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                  <polyline points="3 6 5 6 21 6" />
+                                  <path d="M19 6l-1 14H6L5 6M10 11v6M14 11v6" />
                                 </svg>
                               </button>
                             </div>
@@ -1351,9 +1384,15 @@ export function LogWorkout() {
                           <div className="flex items-center gap-2">
                             <p className="font-semibold text-gray-900 dark:text-white flex-1">{ex.name}</p>
                             {ssBadge.label && <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${ssBadge.cls}`}>{ssBadge.label}</span>}
-                            <button onClick={() => setEditingExercise({ ex, exIdx })} className="p-1 text-gray-300 dark:text-gray-600 hover:text-gray-500 dark:hover:text-gray-400 transition-colors" title="Edit exercise">
+                            <button onClick={() => setEditingExercise({ ex, exIdx })} className="h-9 w-9 flex items-center justify-center text-gray-300 dark:text-gray-600 hover:text-gray-500 dark:hover:text-gray-400 transition-colors" title="Edit exercise" aria-label="Edit exercise">
                               <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                                 <path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z" />
+                              </svg>
+                            </button>
+                            <button onClick={() => requestRemoveExercise({ ex, exIdx })} className="h-9 w-9 flex items-center justify-center text-gray-300 dark:text-gray-600 hover:text-red-500 transition-colors" title="Remove exercise" aria-label="Remove exercise">
+                              <svg className="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <polyline points="3 6 5 6 21 6" />
+                                <path d="M19 6l-1 14H6L5 6M10 11v6M14 11v6" />
                               </svg>
                             </button>
                           </div>
@@ -1493,6 +1532,25 @@ export function LogWorkout() {
           onClose={() => setShowSettings(false)}
         />
       )}
+      <Modal
+        open={!!confirmRemove}
+        onClose={() => setConfirmRemove(null)}
+        title="Remove Exercise"
+      >
+        {confirmRemove && (
+          <div className="flex flex-col gap-4">
+            <p className="text-sm text-gray-600 dark:text-gray-400">
+              Remove <strong className="text-gray-900 dark:text-white">{confirmRemove.ex.name}</strong> from
+              this workout? The sets you have already logged against it will be lost.
+            </p>
+            <div className="flex gap-3">
+              <Button variant="secondary" className="flex-1" onClick={() => setConfirmRemove(null)}>Cancel</Button>
+              <Button variant="danger" className="flex-1" onClick={() => removeExercise(confirmRemove.exIdx)}>Remove</Button>
+            </div>
+          </div>
+        )}
+      </Modal>
+
       {editingExercise && (
         <ExerciseEditSheet
           ex={editingExercise.ex}
