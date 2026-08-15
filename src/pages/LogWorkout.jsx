@@ -589,7 +589,7 @@ function ExerciseEditSheet({ ex, exIdx, logExercises, onSave, onClose }) {
       <div className="absolute inset-0 bg-black/40" />
       <div
         className="relative bg-white dark:bg-gray-800 rounded-t-3xl w-full max-w-lg overflow-y-auto"
-        style={{ maxHeight: '90vh', paddingBottom: 'calc(1.5rem + env(safe-area-inset-bottom))' }}
+        style={{ maxHeight: '90dvh', paddingBottom: 'calc(1.5rem + env(safe-area-inset-bottom))' }}
         onClick={e => e.stopPropagation()}
       >
         <div className="pt-3 pb-1 flex justify-center">

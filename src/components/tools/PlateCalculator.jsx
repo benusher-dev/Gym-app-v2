@@ -80,7 +80,7 @@ export function PlateCalculator({ onClose, initialTab = 'plates' }) {
         <div className="px-5 pt-2 pb-4">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-base font-bold text-gray-900 dark:text-white">Calculator</h3>
-            <button onClick={onClose} className="p-1 rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
+            <button onClick={onClose} aria-label="Close" className="-mr-2 h-10 w-10 flex items-center justify-center rounded-lg text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
               <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <path d="M18 6L6 18M6 6l12 12" />
               </svg>
