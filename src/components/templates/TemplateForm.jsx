@@ -149,7 +149,7 @@ export function TemplateForm({ initial, onSave, onCancel }) {
 
                 // Superset group
                 return (
-                  <div key={group.supersetId} className="border-l-4 border-indigo-400 rounded-r-2xl bg-[rgba(123,164,196,0.08)]/50 dark:bg-indigo-900/20 pl-3 pr-3 pt-3 pb-3">
+                  <div key={group.supersetId} className="border-l-4 border-[#7ba4c4] rounded-r-2xl bg-[rgba(123,164,196,0.08)]/50 dark:bg-indigo-900/20 pl-3 pr-3 pt-3 pb-3">
                     <div className="flex items-center gap-2 mb-3">
                       <div className="flex gap-0.5 items-center">
                         <div className="h-3.5 w-1 bg-[#7ba4c4] rounded-full" />

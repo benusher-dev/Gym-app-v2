@@ -123,7 +123,7 @@ export function ExercisePicker({ open, onAdd, onClose }) {
               <div key={i} className="flex items-center gap-2 py-1">
                 <button
                   onClick={() => handleAdd(ex)}
-                  className="flex-1 flex items-center justify-between px-3 py-2.5 rounded-xl hover:bg-[rgba(123,164,196,0.08)] dark:hover:bg-indigo-900/30 active:bg-indigo-100 transition-colors text-left"
+                  className="flex-1 flex items-center justify-between px-3 py-2.5 rounded-xl hover:bg-[rgba(123,164,196,0.08)] dark:hover:bg-indigo-900/30 active:bg-[rgba(123,164,196,0.15)] transition-colors text-left"
                 >
                   <span className="text-sm font-medium text-gray-900 dark:text-white">{ex.name}</span>
                   <span className={`text-xs px-2 py-0.5 rounded-full font-semibold flex-shrink-0 ml-2 ${badgeColor}`}>

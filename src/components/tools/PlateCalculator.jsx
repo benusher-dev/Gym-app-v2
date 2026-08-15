@@ -171,12 +171,12 @@ export function PlateCalculator({ onClose, initialTab = 'plates' }) {
 
                   <div className="mt-4 bg-[rgba(123,164,196,0.08)] dark:bg-indigo-900/30 rounded-xl p-3 flex items-center justify-between">
                     <div>
-                      <p className="text-xs text-indigo-500 dark:text-indigo-400 font-medium">Total on bar</p>
-                      <p className="text-lg font-bold text-indigo-700 dark:text-indigo-300">{parseFloat(target)} kg</p>
+                      <p className="text-xs text-[#7ba4c4] dark:text-indigo-400 font-medium">Total on bar</p>
+                      <p className="text-lg font-bold text-[#5a7a96] dark:text-indigo-300">{parseFloat(target)} kg</p>
                     </div>
                     <div className="text-right">
-                      <p className="text-xs text-indigo-500 dark:text-indigo-400 font-medium">Per side</p>
-                      <p className="text-base font-bold text-indigo-700 dark:text-indigo-300">
+                      <p className="text-xs text-[#7ba4c4] dark:text-indigo-400 font-medium">Per side</p>
+                      <p className="text-base font-bold text-[#5a7a96] dark:text-indigo-300">
                         {barPlates.reduce((s, { kg, count }) => s + kg * count, 0).toFixed(2)} kg
                       </p>
                     </div>
@@ -217,8 +217,8 @@ export function PlateCalculator({ onClose, initialTab = 'plates' }) {
                 <>
                   <div className="bg-[rgba(123,164,196,0.08)] dark:bg-indigo-900/30 rounded-xl p-3 flex items-center justify-between mb-4">
                     <div>
-                      <p className="text-xs text-indigo-500 dark:text-indigo-400 font-medium">Estimated 1RM</p>
-                      <p className="text-2xl font-bold text-indigo-700 dark:text-indigo-300">{oneRM} kg</p>
+                      <p className="text-xs text-[#7ba4c4] dark:text-indigo-400 font-medium">Estimated 1RM</p>
+                      <p className="text-2xl font-bold text-[#5a7a96] dark:text-indigo-300">{oneRM} kg</p>
                     </div>
                     <p className="text-xs text-[#7ba4c4] dark:text-indigo-500 text-right max-w-[100px]">Epley formula<br/>w × (1 + r/30)</p>
                   </div>
