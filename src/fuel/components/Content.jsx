@@ -7,8 +7,8 @@ function Block({ block }) {
 
   if (block.type === 'note') {
     return (
-      <div className="rounded-xl border border-rdc-200 bg-rdc-50 px-4 py-3.5">
-        <p className="text-[13px] text-rdc-800 leading-relaxed">{block.body}</p>
+      <div className="rounded-xl border border-steel-200 bg-steel-50 px-4 py-3.5">
+        <p className="text-[13px] text-steel-800 leading-relaxed">{block.body}</p>
       </div>
     )
   }
@@ -18,7 +18,7 @@ function Block({ block }) {
       <ul className="flex flex-col gap-3">
         {block.items.map((it, i) => (
           <li key={i} className="flex gap-3">
-            <span className="mt-[7px] h-1.5 w-1.5 rounded-full bg-rdc-400 flex-shrink-0" />
+            <span className="mt-[7px] h-1.5 w-1.5 rounded-full bg-steel-400 flex-shrink-0" />
             <p className="text-[14px] text-neutral-600 leading-relaxed">
               {typeof it === 'string' ? it : (
                 <>
@@ -39,11 +39,11 @@ function Block({ block }) {
         {block.items.map((it, i) => (
           <div key={i} className="flex gap-4">
             <div className="flex flex-col items-center flex-shrink-0">
-              <span className="h-2.5 w-2.5 rounded-full bg-rdc-600 mt-1.5" />
-              {i < block.items.length - 1 && <span className="w-px flex-1 bg-rdc-200 my-1" />}
+              <span className="h-2.5 w-2.5 rounded-full bg-steel-600 mt-1.5" />
+              {i < block.items.length - 1 && <span className="w-px flex-1 bg-steel-200 my-1" />}
             </div>
             <div className={i < block.items.length - 1 ? 'pb-5' : ''}>
-              <p className="font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-rdc-600">
+              <p className="font-mono text-[10px] font-bold uppercase tracking-[0.12em] text-steel-600">
                 {it.when}
               </p>
               <p className="font-display text-[16px] font-semibold text-neutral-900 leading-tight mt-1">

@@ -31,9 +31,9 @@ export const MEAL_TEMPLATES = [
     id: 'big_scramble', name: 'Scramble & Potato Hash', slots: ['breakfast'], prep: 2,
     items: [
       { role: 'protein', options: ['eggs', 'tofu'] },
-      { role: 'carb', options: ['potato', 'sweet_potato'] },
+      { role: 'carb', options: ['new_potatoes', 'sweet_potato'] },
       { role: 'fat', options: ['olive_oil', 'cheddar'] },
-      { role: 'fixed', food: 'capsicum', grams: 80 },
+      { role: 'fixed', food: 'onion_pepper', grams: 80 },
     ],
   },
   {
@@ -51,7 +51,7 @@ export const MEAL_TEMPLATES = [
     id: 'chicken_rice', name: 'Chicken & Rice Bowl', slots: ['lunch', 'dinner'], prep: 2,
     items: [
       { role: 'protein', options: ['chicken_breast', 'chicken_thigh', 'turkey_mince', 'tofu', 'tempeh'] },
-      { role: 'carb', options: ['white_rice', 'basmati', 'quinoa'] },
+      { role: 'carb', options: ['basmati', 'white_rice', 'couscous', 'quinoa'] },
       { role: 'fat', options: ['olive_oil', 'avocado'] },
       { role: 'veg', options: ['broccoli', 'mixed_veg'], grams: 150 },
     ],
@@ -60,8 +60,8 @@ export const MEAL_TEMPLATES = [
   {
     id: 'steak_potato', name: 'Steak, Potato & Greens', slots: ['dinner'], prep: 2,
     items: [
-      { role: 'protein', options: ['rump_steak', 'kangaroo', 'lamb_leg', 'chicken_thigh', 'tempeh'] },
-      { role: 'carb', options: ['potato', 'sweet_potato'] },
+      { role: 'protein', options: ['rump_steak', 'venison', 'lamb_leg', 'chicken_thigh', 'tempeh'] },
+      { role: 'carb', options: ['new_potatoes', 'sweet_potato'] },
       { role: 'fat', options: ['olive_oil'] },
       { role: 'veg', options: ['broccoli', 'mixed_veg'], grams: 180 },
     ],
@@ -70,16 +70,16 @@ export const MEAL_TEMPLATES = [
     id: 'mince_pasta', name: 'Beef Mince Pasta', slots: ['lunch', 'dinner'], prep: 2,
     items: [
       { role: 'protein', options: ['beef_mince', 'turkey_mince', 'lentils', 'tofu'] },
-      { role: 'carb', options: ['pasta', 'white_rice', 'quinoa'] },
+      { role: 'carb', options: ['pasta', 'white_rice', 'couscous', 'quinoa'] },
       { role: 'fat', options: ['olive_oil', 'cheddar'] },
-      { role: 'veg', options: ['mixed_veg', 'capsicum'], grams: 150 },
+      { role: 'veg', options: ['mixed_veg', 'onion_pepper'], grams: 150 },
     ],
   },
   {
     id: 'salmon_sweet', name: 'Salmon & Sweet Potato', slots: ['lunch', 'dinner'], prep: 2,
     items: [
-      { role: 'protein', options: ['salmon', 'white_fish', 'chicken_breast', 'tofu'] },
-      { role: 'carb', options: ['sweet_potato', 'basmati', 'quinoa'] },
+      { role: 'protein', options: ['salmon', 'cod', 'chicken_breast', 'tofu'] },
+      { role: 'carb', options: ['sweet_potato', 'basmati', 'couscous', 'quinoa'] },
       { role: 'fat', options: ['olive_oil'] },
       { role: 'veg', options: ['broccoli', 'spinach'], grams: 150 },
     ],
@@ -99,16 +99,16 @@ export const MEAL_TEMPLATES = [
     id: 'stirfry', name: 'Stir Fry & Rice', slots: ['lunch', 'dinner'], prep: 2,
     items: [
       { role: 'protein', options: ['chicken_thigh', 'prawns', 'beef_mince', 'tofu', 'tempeh'] },
-      { role: 'carb', options: ['white_rice', 'basmati'] },
+      { role: 'carb', options: ['basmati', 'white_rice'] },
       { role: 'fat', options: ['olive_oil', 'almonds'] },
-      { role: 'veg', options: ['mixed_veg', 'capsicum', 'broccoli'], grams: 200 },
+      { role: 'veg', options: ['mixed_veg', 'onion_pepper', 'broccoli'], grams: 200 },
     ],
   },
   {
     id: 'quick_bowl', name: 'Fast Protein & Rice', slots: ['lunch', 'dinner'], prep: 1,
     items: [
-      { role: 'protein', options: ['tuna_tin', 'chicken_breast', 'eggs', 'chickpeas', 'tofu'] },
-      { role: 'carb', options: ['white_rice', 'basmati', 'rice_cakes'] },
+      { role: 'protein', options: ['chicken_breast', 'eggs', 'tuna_tin', 'chickpeas', 'tofu'] },
+      { role: 'carb', options: ['basmati', 'white_rice', 'rice_cakes'] },
       { role: 'fat', options: ['avocado', 'olive_oil'] },
       { role: 'veg', options: ['spinach', 'mixed_veg'], grams: 120 },
     ],
@@ -143,7 +143,25 @@ export const MEAL_TEMPLATES = [
     note: 'Slow-digesting protein — the best of the snacks before bed.',
   },
 
+  {
+    id: 'chicken_wrap', name: 'Chicken Wrap & Salad', slots: ['lunch'], prep: 1,
+    items: [
+      { role: 'protein', options: ['chicken_breast', 'turkey_mince', 'tuna_tin', 'chickpeas', 'tofu'] },
+      { role: 'carb', options: ['tortilla', 'wholemeal_bread', 'gf_bread'] },
+      { role: 'fat', options: ['avocado', 'cheddar', 'olive_oil'] },
+      { role: 'fixed', food: 'spinach', grams: 120 },
+    ],
+  },
+
   // ── Pre-training — high carb, low fat and fibre so it clears the gut ───────
+  {
+    id: 'pre_bar', name: 'Protein Bar & Banana', slots: ['prefuel', 'snack'], prep: 0,
+    items: [
+      { role: 'protein', options: ['protein_bar', 'whey', 'pea_protein'] },
+      { role: 'carb', options: ['banana', 'rice_cakes', 'honey'] },
+    ],
+    note: 'The pre-gym default. A banana and 25 g of sweets are within a couple of grams of carbs of each other, so swap freely.',
+  },
   {
     id: 'pre_banana', name: 'Banana, Honey & Rice Cakes', slots: ['prefuel'], prep: 0,
     items: [
@@ -164,7 +182,7 @@ export const MEAL_TEMPLATES = [
   {
     id: 'pre_rice', name: 'White Rice & Lean Protein', slots: ['prefuel'], prep: 1,
     items: [
-      { role: 'carb', options: ['white_rice', 'basmati'] },
+      { role: 'carb', options: ['basmati', 'white_rice'] },
       { role: 'protein', options: ['chicken_breast', 'tuna_tin', 'eggs', 'tofu'] },
     ],
   },
@@ -182,7 +200,7 @@ export const MEAL_TEMPLATES = [
     id: 'post_chicken_rice', name: 'Chicken & White Rice', slots: ['post'], prep: 1,
     items: [
       { role: 'protein', options: ['chicken_breast', 'turkey_mince', 'tuna_tin', 'tofu'] },
-      { role: 'carb', options: ['white_rice', 'basmati'] },
+      { role: 'carb', options: ['basmati', 'white_rice'] },
       { role: 'veg', options: ['mixed_veg', 'spinach'], grams: 100 },
     ],
   },

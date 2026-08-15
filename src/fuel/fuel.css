@@ -4,7 +4,7 @@
 
 @layer base {
   body {
-    @apply bg-white text-neutral-900 font-body antialiased;
+    @apply bg-[#f7f9fb] text-neutral-900 font-body antialiased;
     -webkit-tap-highlight-color: transparent;
   }
 
@@ -22,7 +22,7 @@
 @layer components {
   /* Small letterspaced uppercase section label */
   .lbl {
-    @apply font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-rdc-600;
+    @apply font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-steel-600;
   }
 
   .lbl-muted {
@@ -35,17 +35,17 @@
   }
 
   .pill-off {
-    @apply bg-white border-neutral-200 text-neutral-700 hover:border-rdc-300;
+    @apply bg-white border-transparent shadow-[0_1px_3px_rgba(0,0,0,0.08)] text-neutral-700 hover:text-steel-800;
   }
 
   .pill-on {
-    @apply bg-rdc-600 border-rdc-600 text-white;
+    @apply bg-steel-600 border-steel-600 text-white;
   }
 
   .fld {
-    @apply w-full rounded-lg bg-neutral-100 border border-transparent px-3 py-2.5 text-[15px]
-           placeholder:text-neutral-400 focus:outline-none focus:bg-white
-           focus:border-rdc-400 focus:ring-2 focus:ring-rdc-600/15 transition-colors;
+    @apply w-full rounded-lg bg-white border-0 shadow-[0_1px_3px_rgba(0,0,0,0.08)]
+           px-3 py-2.5 text-[15px] placeholder:text-neutral-400
+           focus:outline-none focus:ring-2 focus:ring-[#7ba4c4]/40 transition-shadow;
   }
 
   .rule {

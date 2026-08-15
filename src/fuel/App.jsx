@@ -37,10 +37,10 @@ export default function App() {
   const Active = TABS.find(t => t.id === tab).Panel
 
   return (
-    <div className="min-h-dvh bg-white">
-      <header className="sticky top-0 z-20 bg-white/95 backdrop-blur-sm border-b border-neutral-200">
+    <div className="min-h-dvh bg-[#f7f9fb]">
+      <header className="sticky top-0 z-20 bg-[#f7f9fb]/95 backdrop-blur-sm border-b border-[rgba(123,164,196,0.15)]">
         <div className="max-w-lg mx-auto px-5 py-3.5 flex items-center gap-3">
-          <span className="text-rdc-600 flex-shrink-0">
+          <span className="text-steel-600 flex-shrink-0">
             <Hex className="h-9 w-9" />
           </span>
           <div className="min-w-0">
@@ -61,7 +61,7 @@ export default function App() {
               onClick={() => setTab(id)}
               className={`flex-1 flex items-center justify-center gap-1.5 py-3 border-b-2 transition-colors ${
                 tab === id
-                  ? 'border-rdc-600 text-rdc-600'
+                  ? 'border-steel-600 text-steel-600'
                   : 'border-transparent text-neutral-400 hover:text-neutral-600'
               }`}
             >
@@ -78,7 +78,7 @@ export default function App() {
         <Active />
       </main>
 
-      <footer className="border-t border-neutral-200 py-6 px-5">
+      <footer className="border-t border-[rgba(123,164,196,0.15)] py-6 px-5">
         <p className="max-w-lg mx-auto text-[11px] text-neutral-400 leading-relaxed text-center">
           General nutrition guidance for healthy adults in training — not medical advice.
           If you have a medical condition or are working with a dietitian, follow their plan over this one.

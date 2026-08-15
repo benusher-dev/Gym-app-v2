@@ -89,7 +89,7 @@ export function FuelPlan() {
     <div className="px-5 pb-16 pt-6 max-w-lg mx-auto">
       {/* Intro */}
       <div className="text-center">
-        <span className="inline-block rounded-full border border-rdc-200 bg-rdc-50 px-4 py-1.5 lbl">
+        <span className="inline-block rounded-full border border-steel-200 bg-steel-50 px-4 py-1.5 lbl">
           Fuel Planner
         </span>
         <h1 className="font-display text-[34px] leading-[1.05] font-bold uppercase tracking-tight mt-4 text-neutral-900">
@@ -113,8 +113,8 @@ export function FuelPlan() {
                 onClick={() => setSex(s)}
                 className={`rounded-lg py-3 font-display text-[15px] font-semibold uppercase tracking-wide border transition-colors ${
                   sex === s
-                    ? 'bg-rdc-600 border-rdc-600 text-white'
-                    : 'bg-white border-neutral-200 text-neutral-700 hover:border-rdc-300'
+                    ? 'bg-steel-600 border-steel-600 text-white'
+                    : 'bg-white border-neutral-200 text-neutral-700 hover:border-steel-300'
                 }`}
               >
                 {s}
@@ -237,7 +237,7 @@ export function FuelPlan() {
             onChange={e => setNotes(e.target.value)}
           />
           {SKIP_BREAKFAST_RE.test(notes) && (
-            <p className="text-[11px] text-rdc-600 mt-1.5 font-medium">
+            <p className="text-[11px] text-steel-600 mt-1.5 font-medium">
               Picked up that you skip breakfast — the plan will fold those calories into your other meals.
             </p>
           )}
@@ -246,26 +246,26 @@ export function FuelPlan() {
         {/* Budget */}
         <div>
           <SectionLabel muted>Weekly Food Budget (Optional)</SectionLabel>
-          <div className="rounded-xl bg-neutral-50 border border-neutral-200/70 p-4">
+          <div className="rounded-xl bg-[rgba(123,164,196,0.05)] p-4">
             <p className="text-[13px] text-neutral-600 leading-relaxed">
               Enter your weekly grocery budget and the plan will be costed against it,
               with cheaper swaps if it comes in over.
             </p>
             <div className="flex items-center gap-2 mt-3">
-              <span className="font-display text-lg font-semibold text-neutral-400">$</span>
+              <span className="font-display text-lg font-semibold text-neutral-400">£</span>
               <input
-                type="number" inputMode="decimal" placeholder="e.g. 120"
+                type="number" inputMode="decimal" placeholder="e.g. 70"
                 className="fld flex-1 bg-white"
                 value={budget}
                 onChange={e => setBudget(e.target.value)}
               />
-              <span className="text-[12px] text-neutral-400 whitespace-nowrap">AUD / week</span>
+              <span className="text-[12px] text-neutral-400 whitespace-nowrap">£ / week</span>
             </div>
           </div>
         </div>
 
         {error && (
-          <p className="rounded-lg bg-rdc-50 border border-rdc-200 px-4 py-3 text-[13px] text-rdc-700">
+          <p className="rounded-lg bg-steel-50 border border-steel-200 px-4 py-3 text-[13px] text-steel-700">
             {error}
           </p>
         )}
@@ -273,7 +273,7 @@ export function FuelPlan() {
         <button
           type="button"
           onClick={() => build(false)}
-          className="w-full rounded-lg bg-rdc-600 hover:bg-rdc-700 active:scale-[0.99] transition-all
+          className="w-full rounded-lg bg-steel-600 hover:bg-steel-700 active:scale-[0.99] transition-all
                      py-4 flex items-center justify-center gap-2.5 text-white
                      font-display text-[17px] font-semibold uppercase tracking-wide"
         >

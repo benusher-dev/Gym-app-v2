@@ -36,7 +36,7 @@ export function Field({ label, suffix, ...props }) {
 }
 
 export function Stat({ value, unit, label, tone = 'dark' }) {
-  const color = tone === 'brand' ? 'text-rdc-600' : 'text-neutral-900'
+  const color = tone === 'brand' ? 'text-steel-600' : 'text-neutral-900'
   return (
     <div>
       <p className={`font-display text-2xl font-bold leading-none ${color}`}>
@@ -50,7 +50,7 @@ export function Stat({ value, unit, label, tone = 'dark' }) {
 
 export function Panel({ children, className = '' }) {
   return (
-    <div className={`rounded-xl bg-neutral-50 border border-neutral-200/70 p-4 ${className}`}>
+    <div className={`rounded-xl bg-[rgba(123,164,196,0.05)] p-4 ${className}`}>
       {children}
     </div>
   )

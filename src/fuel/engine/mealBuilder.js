@@ -27,15 +27,31 @@ function roundTo(grams, food) {
   return Math.max(0, Math.round(grams / step) * step)
 }
 
-export function describePortion(foodId, grams) {
+/**
+ * Portion text for one entry.
+ *
+ * `mode` is 'cooked' or 'raw'. Macros are always held against the as-sold weight
+ * — cooking drives off water, it does not change the protein in a chicken breast
+ * — so this converts the number shown without touching any of the arithmetic.
+ * Foods eaten as sold (yoghurt, oil, bread, nuts) read the same either way.
+ */
+export function describePortion(foodId, grams, mode = 'raw') {
   const f = FOODS[foodId]
   if (!f) return `${Math.round(grams)} g`
+
+  const factor = f.cooked ?? 1
+  const converts = factor !== 1
+  const shown = mode === 'cooked' && converts ? grams * factor : grams
+
+  // Units only make sense as-sold — three eggs are three eggs however they cook.
   if (f.gPerUnit) {
     const units = Math.round(grams / f.gPerUnit)
     const label = f.unit === 'each' ? '' : ` ${f.unit}${units === 1 ? '' : 's'}`
     return `${units}${label} (${Math.round(grams)} g)`
   }
-  return `${Math.round(grams)} g`
+
+  const qualifier = converts ? (mode === 'cooked' ? ' cooked' : ` ${f.weighAs ?? 'raw'}`) : ''
+  return `${Math.round(shown / 5) * 5} g${qualifier}`
 }
 
 export function macrosOf(foodId, grams) {

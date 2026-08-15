@@ -16,18 +16,19 @@ export default {
           600: '#4f46e5',
           700: '#4338ca',
         },
-        // Rugby fuel planner — deep maroon
-        rdc: {
-          50:  '#faf4f5',
-          100: '#f3e7ea',
-          200: '#e6ccd2',
-          300: '#cf9ba7',
-          400: '#a85a6c',
-          500: '#8a2f45',
-          600: '#6e1d2f',
-          700: '#5c1826',
-          800: '#48121d',
-          900: '#2e0b13',
+        // Fuel planner — same steel blue as the workout tracker, so the two
+        // read as one app once they are merged. 600 is the tracker's #7ba4c4.
+        steel: {
+          50:  '#f5f8fb',
+          100: '#e9f0f6',
+          200: '#d5e3ed',
+          300: '#b3cfe1',
+          400: '#97bcd4',
+          500: '#8aafca',
+          600: '#7ba4c4',
+          700: '#6b8fae',
+          800: '#5a7a96',
+          900: '#47617a',
         },
       },
       fontFamily: {

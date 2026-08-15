@@ -3,16 +3,16 @@ import { SectionLabel, Stat, Panel } from './ui'
 import { describePortion, macrosOf } from '../engine/mealBuilder'
 import { FOODS } from '../data/foods'
 
-const money = n => `$${n.toFixed(2)}`
+const money = n => `£${n.toFixed(2)}`
 const r = n => Math.round(n)
 
 function MacroBar({ protein, carbs, fat }) {
   const pk = protein * 4, ck = carbs * 4, fk = fat * 9
   const total = pk + ck + fk || 1
   const seg = [
-    { k: 'Protein', v: pk, c: 'bg-rdc-600' },
-    { k: 'Carbs', v: ck, c: 'bg-rdc-400' },
-    { k: 'Fat', v: fk, c: 'bg-rdc-200' },
+    { k: 'Protein', v: pk, c: 'bg-steel-600' },
+    { k: 'Carbs', v: ck, c: 'bg-steel-400' },
+    { k: 'Fat', v: fk, c: 'bg-steel-200' },
   ]
   return (
     <div>
@@ -35,10 +35,10 @@ function MacroBar({ protein, carbs, fat }) {
   )
 }
 
-function Meal({ meal }) {
+function Meal({ meal, weighMode }) {
   if (!meal.template) return null
   return (
-    <div className="border-t border-neutral-200/70 pt-3.5 first:border-0 first:pt-0">
+    <div className="border-t border-[rgba(123,164,196,0.15)] pt-3.5 first:border-0 first:pt-0">
       <div className="flex items-baseline justify-between gap-3">
         <div className="min-w-0">
           <p className="lbl">{meal.label}</p>
@@ -47,7 +47,7 @@ function Meal({ meal }) {
           </p>
         </div>
         <div className="text-right flex-shrink-0">
-          <p className="font-display text-[17px] font-semibold text-rdc-600 leading-none">
+          <p className="font-display text-[17px] font-semibold text-steel-600 leading-none">
             {r(meal.actual.kcal)}
           </p>
           <p className="text-[10px] text-neutral-400 mt-0.5">kcal</p>
@@ -61,7 +61,7 @@ function Meal({ meal }) {
           <li key={i} className="flex justify-between gap-3 text-[13px]">
             <span className="text-neutral-700">{FOODS[e.food].name}</span>
             <span className="text-neutral-500 tabular-nums flex-shrink-0">
-              {describePortion(e.food, e.grams)}
+              {describePortion(e.food, e.grams, weighMode)}
             </span>
           </li>
         ))}
@@ -85,13 +85,14 @@ export function PlanResult({
   cheapMode, onApplySwaps, onRestore,
 }) {
   const [day, setDay] = useState(0)
+  const [weighMode, setWeighMode] = useState('cooked')
   const current = plan[day]
   const totalSaving = swaps.reduce((s, x) => s + x.saving, 0)
 
   return (
     <div className="mt-12">
       {/* ── Targets ── */}
-      <div className="rounded-2xl overflow-hidden bg-rdc-600 text-white">
+      <div className="rounded-2xl overflow-hidden bg-steel-600 text-white">
         <div className="px-5 py-6">
           <p className="font-mono text-[10px] font-bold uppercase tracking-[0.16em] text-white/55">
             Your Daily Target
@@ -139,7 +140,7 @@ export function PlanResult({
             <Stat value={targets.hydration / 1000} unit="L" label="Water / day" tone="brand" />
           </div>
 
-          <div className="mt-4 pt-4 border-t border-neutral-200/70">
+          <div className="mt-4 pt-4 border-t border-[rgba(123,164,196,0.18)]">
             <MacroBar protein={targets.protein} carbs={targets.carbs} fat={targets.fat} />
           </div>
 
@@ -154,8 +155,8 @@ export function PlanResult({
 
       {/* Timeline */}
       {targets.timeline && (
-        <div className="mt-3 rounded-xl border border-rdc-200 bg-rdc-50 px-4 py-3.5">
-          <p className="text-[13px] text-rdc-800 leading-relaxed">
+        <div className="mt-3 rounded-xl border border-steel-200 bg-steel-50 px-4 py-3.5">
+          <p className="text-[13px] text-steel-800 leading-relaxed">
             At this intake you should {targets.timeline.direction}{' '}
             <strong>{targets.timeline.kg.toFixed(1)} kg in roughly {targets.timeline.weeks} weeks</strong>{' '}
             — about {targets.timeline.perWeek.toFixed(2)} kg per week.
@@ -171,7 +172,7 @@ export function PlanResult({
       ))}
 
       {notes && (
-        <div className="mt-3 rounded-xl border border-neutral-200 bg-neutral-50 px-4 py-3.5">
+        <div className="mt-3 rounded-xl bg-[rgba(123,164,196,0.05)] px-4 py-3.5">
           <p className="lbl-muted mb-1.5">Your Notes</p>
           <p className="text-[13px] text-neutral-600 leading-relaxed">{notes}</p>
         </div>
@@ -181,18 +182,41 @@ export function PlanResult({
       <div className="mt-8">
         <SectionLabel>Your Meals</SectionLabel>
         <p className="text-[13px] text-neutral-500 leading-relaxed mb-3">
-          Three rotating days so you are not eating the same plate all week. Weights are
-          raw or as-sold — rice and oats are dry, meat is uncooked.
+          Three rotating days so you are not eating the same plate all week.
         </p>
 
-        <div className="flex gap-1 bg-neutral-100 p-1 rounded-lg mb-4">
+        {/* Cooked vs raw only changes the number shown. The macros are held against
+            the as-sold weight either way — cooking removes water, not protein. */}
+        <div className="flex items-center gap-2 mb-3">
+          <div className="flex rounded-lg bg-steel-100 p-1 text-[11px] font-semibold">
+            {[['cooked', 'Cooked weight'], ['raw', 'Raw & dry']].map(([id, label]) => (
+              <button
+                key={id}
+                type="button"
+                onClick={() => setWeighMode(id)}
+                className={`px-3 py-1.5 rounded-md transition-colors ${
+                  weighMode === id ? 'bg-white text-steel-800 shadow-sm' : 'text-steel-700/70 hover:text-steel-800'
+                }`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </div>
+        <p className="text-[12px] text-neutral-400 leading-relaxed mb-3">
+          {weighMode === 'cooked'
+            ? 'Meat, fish, rice, pasta and potatoes are cooked weights. Yoghurt, oils, nuts, bread and wraps are as-purchased.'
+            : 'Everything is the weight you buy it at — meat and fish raw, rice and pasta dry.'}
+        </p>
+
+        <div className="flex gap-1 bg-[rgba(123,164,196,0.08)] p-1 rounded-lg mb-4">
           {plan.map((d, i) => (
             <button
               key={d.label}
               type="button"
               onClick={() => setDay(i)}
               className={`flex-1 py-2 rounded-md font-mono text-[11px] font-bold uppercase tracking-[0.1em] transition-colors ${
-                day === i ? 'bg-white text-rdc-600 shadow-sm' : 'text-neutral-500 hover:text-neutral-700'
+                day === i ? 'bg-white text-steel-600 shadow-sm' : 'text-neutral-500 hover:text-neutral-700'
               }`}
             >
               {d.label}
@@ -200,8 +224,8 @@ export function PlanResult({
           ))}
         </div>
 
-        <div className="rounded-xl border border-neutral-200/70 p-4 flex flex-col gap-3.5">
-          {current.meals.map((m, i) => <Meal key={i} meal={m} />)}
+        <div className="rounded-xl bg-[rgba(123,164,196,0.05)] p-4 flex flex-col gap-3.5">
+          {current.meals.map((m, i) => <Meal key={i} meal={m} weighMode={weighMode} />)}
         </div>
 
         <div className="flex justify-between items-baseline mt-3 px-1">
@@ -217,7 +241,7 @@ export function PlanResult({
       <div className="mt-8">
         <SectionLabel>Weekly Shopping List</SectionLabel>
 
-        <div className="rounded-xl bg-neutral-900 text-white px-5 py-4 flex items-end justify-between">
+        <div className="rounded-xl bg-[#3d4f5e] text-white px-5 py-4 flex items-end justify-between">
           <div>
             <p className="font-mono text-[10px] font-bold uppercase tracking-[0.14em] text-white/50">
               Estimated Weekly Cost
@@ -250,7 +274,7 @@ export function PlanResult({
         )}
 
         {swaps.length > 0 && (
-          <div className="mt-3 rounded-xl border border-neutral-200/70 p-4">
+          <div className="mt-3 rounded-xl bg-[rgba(123,164,196,0.05)] p-4">
             <p className="lbl-muted mb-2.5">Cheaper Swaps</p>
             <ul className="flex flex-col gap-2">
               {swaps.map(s => (
@@ -269,7 +293,7 @@ export function PlanResult({
             <button
               type="button"
               onClick={onApplySwaps}
-              className="mt-3.5 w-full rounded-lg border border-rdc-600 text-rdc-600 hover:bg-rdc-50
+              className="mt-3.5 w-full rounded-lg border border-steel-600 text-steel-600 hover:bg-steel-50
                          py-2.5 font-display text-[13px] font-semibold uppercase tracking-wide transition-colors"
             >
               Rebuild on the cheapest options &middot; save {money(totalSaving)}
@@ -278,12 +302,12 @@ export function PlanResult({
         )}
 
         {cheapMode && (
-          <div className="mt-3 rounded-xl border border-rdc-200 bg-rdc-50 px-4 py-3.5 flex items-center justify-between gap-3">
-            <p className="text-[13px] text-rdc-800">Built on the cheapest options that fit your food rules.</p>
+          <div className="mt-3 rounded-xl border border-steel-200 bg-steel-50 px-4 py-3.5 flex items-center justify-between gap-3">
+            <p className="text-[13px] text-steel-800">Built on the cheapest options that fit your food rules.</p>
             <button
               type="button"
               onClick={onRestore}
-              className="text-[12px] font-semibold text-rdc-600 underline underline-offset-2 flex-shrink-0"
+              className="text-[12px] font-semibold text-steel-600 underline underline-offset-2 flex-shrink-0"
             >
               Undo
             </button>
@@ -314,8 +338,10 @@ export function PlanResult({
         </div>
 
         <p className="text-[11px] text-neutral-400 mt-5 leading-relaxed">
-          Prices are indicative Australian supermarket averages and will drift with
-          specials and store. Treat the total as a guide, not a quote.
+          Quantities are purchase weights — meat and fish raw, rice and pasta dry —
+          whichever way the meals above are displayed. Prices are indicative UK
+          supermarket averages and drift with store and offers, so treat the total
+          as a guide rather than a quote.
         </p>
       </div>
     </div>
