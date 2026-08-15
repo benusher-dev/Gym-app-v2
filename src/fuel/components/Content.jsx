@@ -62,8 +62,8 @@ function Block({ block }) {
 
 export function Content({ doc }) {
   return (
-    <div className="px-5 pb-16 pt-6 max-w-lg mx-auto">
-      <h1 className="font-display text-[30px] leading-[1.1] font-bold tracking-tight text-neutral-900">
+    <div className="px-4 pb-10 pt-5 max-w-lg mx-auto">
+      <h1 className="text-[22px] leading-tight font-bold tracking-tight text-neutral-900">
         {doc.title}
       </h1>
       <p className="text-[14px] text-neutral-500 leading-relaxed mt-3">{doc.blurb}</p>

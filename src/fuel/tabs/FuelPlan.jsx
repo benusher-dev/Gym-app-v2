@@ -86,22 +86,13 @@ export function FuelPlan() {
   }
 
   return (
-    <div className="px-5 pb-16 pt-6 max-w-lg mx-auto">
-      {/* Intro */}
-      <div className="text-center">
-        <span className="inline-block rounded-full border border-steel-200 bg-steel-50 px-4 py-1.5 lbl">
-          Fuel Planner
-        </span>
-        <h1 className="font-display text-[34px] leading-[1.05] font-bold tracking-tight mt-4 text-neutral-900">
-          Create Your<br />Fuel Plan
-        </h1>
-        <p className="text-[14px] text-neutral-500 leading-relaxed mt-3 max-w-xs mx-auto">
-          Gain size, lose fat and increase performance — fill in your details below
-          and get a plan built around your training.
-        </p>
-      </div>
+    <div className="px-4 pb-10 pt-4 max-w-lg mx-auto">
+      <p className="text-[13px] text-neutral-500 leading-relaxed">
+        Fill in your details and get calories, macros, three rotating days of meals
+        and a costed shopping list.
+      </p>
 
-      <div className="mt-8 flex flex-col gap-7">
+      <div className="mt-6 flex flex-col gap-7">
         {/* Sex */}
         <div>
           <SectionLabel>You Are</SectionLabel>
@@ -111,13 +102,13 @@ export function FuelPlan() {
                 key={s}
                 type="button"
                 onClick={() => setSex(s)}
-                className={`rounded-lg py-3 font-display text-[15px] font-semibold uppercase tracking-wide border transition-colors ${
+                className={`rounded-lg py-2.5 text-[14px] font-semibold border transition-colors ${
                   sex === s
                     ? 'bg-steel-600 border-steel-600 text-white'
                     : 'bg-white border-neutral-200 text-neutral-700 hover:border-steel-300'
                 }`}
               >
-                {s}
+                {s === 'male' ? 'Male' : 'Female'}
               </button>
             ))}
           </div>

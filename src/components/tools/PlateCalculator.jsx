@@ -95,7 +95,7 @@ export function PlateCalculator({ onClose, initialTab = 'plates' }) {
                 onClick={() => setActiveTab(tab.id)}
                 className={`flex-1 py-2 text-sm font-semibold transition-colors ${
                   activeTab === tab.id
-                    ? 'bg-indigo-600 text-white'
+                    ? 'bg-[#7ba4c4] text-white'
                     : 'text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700'
                 }`}
               >
@@ -114,7 +114,7 @@ export function PlateCalculator({ onClose, initialTab = 'plates' }) {
                     type="number" min="0" step="2.5" placeholder="100"
                     value={target}
                     onChange={e => setTarget(e.target.value)}
-                    className="w-full rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 dark:text-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 dark:text-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#7ba4c4]/40"
                     autoFocus
                   />
                 </div>
@@ -125,7 +125,7 @@ export function PlateCalculator({ onClose, initialTab = 'plates' }) {
                       <button
                         key={b}
                         onClick={() => setBarKg(b)}
-                        className={`px-3 py-2 transition-colors ${barKg === b ? 'bg-indigo-600 text-white' : 'text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700'}`}
+                        className={`px-3 py-2 transition-colors ${barKg === b ? 'bg-[#7ba4c4] text-white' : 'text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700'}`}
                       >
                         {b}kg
                       </button>
@@ -169,7 +169,7 @@ export function PlateCalculator({ onClose, initialTab = 'plates' }) {
                     </div>
                   )}
 
-                  <div className="mt-4 bg-indigo-50 dark:bg-indigo-900/30 rounded-xl p-3 flex items-center justify-between">
+                  <div className="mt-4 bg-[rgba(123,164,196,0.08)] dark:bg-indigo-900/30 rounded-xl p-3 flex items-center justify-between">
                     <div>
                       <p className="text-xs text-indigo-500 dark:text-indigo-400 font-medium">Total on bar</p>
                       <p className="text-lg font-bold text-indigo-700 dark:text-indigo-300">{parseFloat(target)} kg</p>
@@ -198,7 +198,7 @@ export function PlateCalculator({ onClose, initialTab = 'plates' }) {
                     type="number" min="0" step="0.5" placeholder="80"
                     value={rmWeight}
                     onChange={e => setRmWeight(e.target.value)}
-                    className="w-full rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 dark:text-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 dark:text-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#7ba4c4]/40"
                     autoFocus
                   />
                 </div>
@@ -208,19 +208,19 @@ export function PlateCalculator({ onClose, initialTab = 'plates' }) {
                     type="number" min="1" max="30" step="1" placeholder="5"
                     value={rmReps}
                     onChange={e => setRmReps(e.target.value)}
-                    className="w-full rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 dark:text-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                    className="w-full rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 dark:text-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#7ba4c4]/40"
                   />
                 </div>
               </div>
 
               {oneRM ? (
                 <>
-                  <div className="bg-indigo-50 dark:bg-indigo-900/30 rounded-xl p-3 flex items-center justify-between mb-4">
+                  <div className="bg-[rgba(123,164,196,0.08)] dark:bg-indigo-900/30 rounded-xl p-3 flex items-center justify-between mb-4">
                     <div>
                       <p className="text-xs text-indigo-500 dark:text-indigo-400 font-medium">Estimated 1RM</p>
                       <p className="text-2xl font-bold text-indigo-700 dark:text-indigo-300">{oneRM} kg</p>
                     </div>
-                    <p className="text-xs text-indigo-400 dark:text-indigo-500 text-right max-w-[100px]">Epley formula<br/>w × (1 + r/30)</p>
+                    <p className="text-xs text-[#7ba4c4] dark:text-indigo-500 text-right max-w-[100px]">Epley formula<br/>w × (1 + r/30)</p>
                   </div>
 
                   <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">% Table</p>
@@ -232,11 +232,11 @@ export function PlateCalculator({ onClose, initialTab = 'plates' }) {
                         <div
                           key={pct}
                           className={`flex items-center justify-between px-3 py-2 rounded-xl text-sm ${
-                            isMax ? 'bg-indigo-600 text-white font-bold' : 'bg-gray-50 dark:bg-gray-700/50'
+                            isMax ? 'bg-[#7ba4c4] text-white font-bold' : 'bg-gray-50 dark:bg-gray-700/50'
                           }`}
                         >
                           <div className="flex items-center gap-3">
-                            <span className={`font-bold w-8 ${isMax ? 'text-white' : 'text-indigo-600 dark:text-indigo-400'}`}>{pct}%</span>
+                            <span className={`font-bold w-8 ${isMax ? 'text-white' : 'text-[#5a7a96] dark:text-indigo-400'}`}>{pct}%</span>
                             <span className={isMax ? 'text-indigo-100' : 'text-gray-400 dark:text-gray-500'}>~{RM_REPS[idx]} rep{RM_REPS[idx] !== 1 ? 's' : ''}</span>
                           </div>
                           <span className={`font-semibold tabular-nums ${isMax ? 'text-white' : 'text-gray-800 dark:text-gray-200'}`}>{w} kg</span>

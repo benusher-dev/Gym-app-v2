@@ -4,7 +4,7 @@ export function ExerciseRow({ exercise, index, onChange, onDelete }) {
   }
 
   const isCardio = !!exercise.isCardio
-  const inputCls = 'rounded-lg border border-gray-200 dark:border-gray-600 px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white dark:bg-gray-700 dark:text-white dark:placeholder-gray-400'
+  const inputCls = 'rounded-lg border border-gray-200 dark:border-gray-600 px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-[#7ba4c4]/40 bg-white dark:bg-gray-700 dark:text-white dark:placeholder-gray-400'
 
   return (
     <div className="flex flex-col gap-2 p-3 bg-gray-50 dark:bg-gray-700/50 rounded-xl border border-gray-100 dark:border-gray-600">

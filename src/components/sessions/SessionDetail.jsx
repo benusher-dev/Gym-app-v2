@@ -39,7 +39,7 @@ export function SessionDetail({ session }) {
               <div key={j} className="grid grid-cols-3 gap-1 text-sm py-1 px-1 rounded-lg even:bg-gray-100 dark:even:bg-gray-700">
                 <span className="text-gray-500 dark:text-gray-400">{j + 1}</span>
                 <span className="text-center font-medium dark:text-gray-200">{set.reps}</span>
-                <span className="text-center text-indigo-600 dark:text-indigo-400 font-medium">
+                <span className="text-center text-[#5a7a96] dark:text-indigo-400 font-medium">
                   {set.weight ? `${set.weight} kg` : '—'}
                 </span>
               </div>

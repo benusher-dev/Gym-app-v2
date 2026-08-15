@@ -369,13 +369,13 @@ function BodyWeightCard({ onNavigate }) {
           <svg viewBox={`0 0 ${sparkline.W} ${sparkline.H}`} className="w-full" style={{ height: 60 }} preserveAspectRatio="none">
             <defs>
               <linearGradient id="bwGrad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#38bdf8" stopOpacity="0.35" />
-                <stop offset="100%" stopColor="#38bdf8" stopOpacity="0" />
+                <stop offset="0%" stopColor="#7ba4c4" stopOpacity="0.35" />
+                <stop offset="100%" stopColor="#7ba4c4" stopOpacity="0" />
               </linearGradient>
             </defs>
             <path d={sparkline.areaPath} fill="url(#bwGrad)" />
-            <path d={sparkline.linePath} fill="none" stroke="#0ea5e9" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-            <circle cx={sparkline.lastPt[0]} cy={sparkline.lastPt[1]} r="3.5" fill="#0ea5e9" />
+            <path d={sparkline.linePath} fill="none" stroke="#7ba4c4" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            <circle cx={sparkline.lastPt[0]} cy={sparkline.lastPt[1]} r="3.5" fill="#7ba4c4" />
           </svg>
         </div>
       )}
@@ -475,7 +475,7 @@ function ScheduleStrip({ schedule, templates, today, onAssignDay }) {
                     </svg>
                   </div>
                   {dayTmpls.length > 1 && (
-                    <span className={`absolute -top-1 -right-1 text-[7px] font-bold w-3.5 h-3.5 rounded-full flex items-center justify-center ${isToday ? 'bg-white text-indigo-600 dark:text-amber-700' : 'bg-indigo-500 dark:bg-amber-500 text-white'}`}>
+                    <span className={`absolute -top-1 -right-1 text-[7px] font-bold w-3.5 h-3.5 rounded-full flex items-center justify-center ${isToday ? 'bg-white text-[#5a7a96] dark:text-amber-700' : 'bg-[#7ba4c4] dark:bg-amber-500 text-white'}`}>
                       {dayTmpls.length}
                     </span>
                   )}

@@ -1,6 +1,6 @@
 const variants = {
-  primary: 'bg-indigo-600 dark:bg-amber-600 text-white hover:bg-indigo-700 dark:hover:bg-amber-700 active:bg-indigo-800 dark:active:bg-amber-800 disabled:bg-indigo-300 dark:disabled:bg-amber-400',
-  secondary: 'bg-white dark:bg-gray-700 text-indigo-600 dark:text-amber-400 border border-indigo-300 dark:border-amber-600/50 hover:bg-indigo-50 dark:hover:bg-gray-600 active:bg-indigo-100 disabled:opacity-50',
+  primary: 'bg-[#7ba4c4] dark:bg-amber-600 text-white hover:bg-[#6b8fae] dark:hover:bg-amber-700 active:bg-indigo-800 dark:active:bg-amber-800 disabled:bg-indigo-300 dark:disabled:bg-amber-400',
+  secondary: 'bg-white dark:bg-gray-700 text-[#5a7a96] dark:text-amber-400 border border-[#b3cfe1] dark:border-amber-600/50 hover:bg-[rgba(123,164,196,0.08)] dark:hover:bg-gray-600 active:bg-indigo-100 disabled:opacity-50',
   danger: 'bg-red-600 text-white hover:bg-red-700 active:bg-red-800 disabled:opacity-50',
   ghost: 'text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 active:bg-gray-200 disabled:opacity-50',
 }
@@ -14,7 +14,7 @@ const sizes = {
 export function Button({ children, variant = 'primary', size = 'md', className = '', loading = false, ...props }) {
   return (
     <button
-      className={`inline-flex items-center justify-center gap-2 rounded-xl font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-amber-500 focus:ring-offset-2 ${variants[variant]} ${sizes[size]} ${className}`}
+      className={`inline-flex items-center justify-center gap-2 rounded-xl font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-[#7ba4c4]/40 dark:focus:ring-amber-500 focus:ring-offset-2 ${variants[variant]} ${sizes[size]} ${className}`}
       disabled={loading || props.disabled}
       {...props}
     >

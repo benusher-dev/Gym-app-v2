@@ -42,6 +42,16 @@ const NAV_ITEMS = [
     ),
   },
   {
+    id: 'fuel',
+    label: 'Fuel',
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6">
+        <path d="M12 8.6c1.2-1.2 3-1.6 4.4-.5 1.7 1.3 2 4 .8 6.6-1 2.1-2.4 3.8-3.6 3.8-.7 0-1.1-.4-1.6-.4s-.9.4-1.6.4c-1.2 0-2.6-1.7-3.6-3.8-1.2-2.6-.9-5.3.8-6.6 1.4-1.1 3.2-.7 4.4.5z" />
+        <path d="M12 8.6c0-1.8 1.3-3.2 3-3.4" />
+      </svg>
+    ),
+  },
+  {
     id: 'progress',
     label: 'Progress',
     icon: (

@@ -63,8 +63,8 @@ function WeightChart({ entries }) {
       >
         <defs>
           <linearGradient id="wGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#0ea5e9" stopOpacity="0.3" />
-            <stop offset="100%" stopColor="#0ea5e9" stopOpacity="0.02" />
+            <stop offset="0%" stopColor="#7ba4c4" stopOpacity="0.3" />
+            <stop offset="100%" stopColor="#7ba4c4" stopOpacity="0.02" />
           </linearGradient>
         </defs>
 
@@ -96,14 +96,14 @@ function WeightChart({ entries }) {
         <path d={areaPath} fill="url(#wGrad)" />
 
         {/* Line */}
-        <path d={linePath} fill="none" stroke="#0ea5e9" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        <path d={linePath} fill="none" stroke="#7ba4c4" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
 
         {/* Data points */}
         {pts.map((p, i) => (
           <circle
             key={i}
             cx={p.x} cy={p.y} r={active === i ? 5 : 3.5}
-            fill={active === i ? '#0284c7' : '#0ea5e9'}
+            fill={active === i ? '#5a7a96' : '#7ba4c4'}
             stroke="white" strokeWidth="1.5"
             style={{ cursor: 'pointer' }}
             onMouseEnter={() => setActive(i)}
@@ -113,7 +113,7 @@ function WeightChart({ entries }) {
 
         {/* Active vertical line */}
         {ap && (
-          <line x1={ap.x} y1={padT} x2={ap.x} y2={padT + chartH} stroke="#0ea5e9" strokeWidth="1" strokeDasharray="3 3" opacity="0.6" />
+          <line x1={ap.x} y1={padT} x2={ap.x} y2={padT + chartH} stroke="#7ba4c4" strokeWidth="1" strokeDasharray="3 3" opacity="0.6" />
         )}
       </svg>
     </div>
@@ -171,7 +171,7 @@ export function BodyWeightPage() {
                 { label: 'Highest', value: maxW },
               ].map(({ label, value }) => (
                 <div key={label} className="bg-white dark:bg-gray-800 rounded-2xl border border-gray-100 dark:border-gray-700 shadow-sm p-3 text-center">
-                  <p className="text-xl font-bold text-sky-500">{value}<span className="text-sm font-medium text-gray-400 ml-0.5">kg</span></p>
+                  <p className="text-xl font-bold text-[#7ba4c4]">{value}<span className="text-sm font-medium text-gray-400 ml-0.5">kg</span></p>
                   <p className="text-[10px] text-gray-500 dark:text-gray-400 mt-0.5">{label}</p>
                 </div>
               ))}
@@ -201,7 +201,7 @@ export function BodyWeightPage() {
               <button
                 onClick={handleLog}
                 disabled={!input}
-                className="px-4 py-2 rounded-xl text-sm font-semibold bg-sky-500 text-white hover:bg-sky-600 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+                className="px-4 py-2 rounded-xl text-sm font-semibold bg-[#7ba4c4] text-white hover:bg-[#6b8fae] disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
               >
                 Log
               </button>

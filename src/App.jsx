@@ -6,6 +6,7 @@ import { LogWorkout } from './pages/LogWorkout'
 import { History } from './pages/History'
 import { Progress } from './pages/Progress'
 import { BodyWeightPage } from './pages/BodyWeightPage'
+import { Fuel } from './pages/Fuel'
 
 function Pages() {
   const { activePage } = useApp()
@@ -22,6 +23,7 @@ function Pages() {
         {activePage === 'history'     && <History />}
         {activePage === 'progress'    && <Progress />}
         {activePage === 'bodyweight'  && <BodyWeightPage />}
+        {activePage === 'fuel'        && <Fuel />}
       </div>
     </main>
   )

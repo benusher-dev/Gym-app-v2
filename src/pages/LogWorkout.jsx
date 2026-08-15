@@ -28,7 +28,7 @@ const TYPE_META = {
   weight:    { label: 'Weights',     cls: 'text-[#5a7a96] bg-[rgba(123,164,196,0.12)] dark:bg-indigo-900/30 dark:text-indigo-300' },
   bw:        { label: 'Bodyweight',  cls: 'text-emerald-600 bg-emerald-50 dark:bg-emerald-900/30' },
   hold:      { label: '⏱ Hold',      cls: 'text-violet-600 bg-violet-50 dark:bg-violet-900/30' },
-  cardio:    { label: '🏃 Cardio',   cls: 'text-sky-500 bg-sky-50 dark:bg-sky-900/30' },
+  cardio:    { label: '🏃 Cardio',   cls: 'text-[#7ba4c4] bg-sky-50 dark:bg-sky-900/30' },
   checklist: { label: null },
 }
 
@@ -673,8 +673,8 @@ function ExerciseEditSheet({ ex, exIdx, logExercises, onSave, onClose }) {
                   onClick={() => setSsId(ss.id)}
                   className={`px-3 py-1.5 rounded-xl text-xs font-semibold border transition-colors ${
                     supersetId === ss.id
-                      ? 'bg-indigo-600 text-white border-transparent'
-                      : 'border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:border-indigo-300'
+                      ? 'bg-[#7ba4c4] text-white border-transparent'
+                      : 'border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:border-[#b3cfe1]'
                   }`}
                 >
                   {ss.names.length ? ss.names.slice(0, 2).join(' · ') + (ss.names.length > 2 ? ' +' + (ss.names.length - 2) : '') : 'Empty group'}
@@ -682,7 +682,7 @@ function ExerciseEditSheet({ ex, exIdx, logExercises, onSave, onClose }) {
               ))}
               <button
                 onClick={() => setSsId(generateId())}
-                className="px-3 py-1.5 rounded-xl text-xs font-semibold border border-dashed border-indigo-300 dark:border-indigo-700 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 transition-colors"
+                className="px-3 py-1.5 rounded-xl text-xs font-semibold border border-dashed border-[#b3cfe1] dark:border-indigo-700 text-[#5a7a96] dark:text-indigo-400 hover:bg-[rgba(123,164,196,0.08)] dark:hover:bg-indigo-900/30 transition-colors"
               >
                 + New group
               </button>
@@ -731,7 +731,7 @@ function ExerciseEditSheet({ ex, exIdx, logExercises, onSave, onClose }) {
             <button onClick={onClose} className="flex-1 py-2.5 rounded-xl border border-gray-200 dark:border-gray-600 text-sm font-medium text-gray-700 dark:text-gray-300">
               Cancel
             </button>
-            <button onClick={handleSave} className="flex-1 py-2.5 rounded-xl bg-sky-500 dark:bg-amber-600 text-white text-sm font-semibold hover:bg-sky-600 dark:hover:bg-amber-700 transition-colors">
+            <button onClick={handleSave} className="flex-1 py-2.5 rounded-xl bg-[#7ba4c4] dark:bg-amber-600 text-white text-sm font-semibold hover:bg-[#6b8fae] dark:hover:bg-amber-700 transition-colors">
               Save
             </button>
           </div>
@@ -784,7 +784,7 @@ function SettingsSheet({ autoRest, showRPE, onToggleAutoRest, onToggleRPE, weekN
               </div>
               <button
                 onClick={onToggleAutoRest}
-                className={`relative flex-shrink-0 inline-flex h-6 w-11 items-center rounded-full transition-colors ${autoRest ? 'bg-indigo-600 dark:bg-amber-600' : 'bg-gray-200 dark:bg-gray-600'}`}
+                className={`relative flex-shrink-0 inline-flex h-6 w-11 items-center rounded-full transition-colors ${autoRest ? 'bg-[#7ba4c4] dark:bg-amber-600' : 'bg-gray-200 dark:bg-gray-600'}`}
               >
                 <span className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform ${autoRest ? 'translate-x-6' : 'translate-x-1'}`} />
               </button>
@@ -796,7 +796,7 @@ function SettingsSheet({ autoRest, showRPE, onToggleAutoRest, onToggleRPE, weekN
               </div>
               <button
                 onClick={onToggleRPE}
-                className={`relative flex-shrink-0 inline-flex h-6 w-11 items-center rounded-full transition-colors ${showRPE ? 'bg-indigo-600 dark:bg-amber-600' : 'bg-gray-200 dark:bg-gray-600'}`}
+                className={`relative flex-shrink-0 inline-flex h-6 w-11 items-center rounded-full transition-colors ${showRPE ? 'bg-[#7ba4c4] dark:bg-amber-600' : 'bg-gray-200 dark:bg-gray-600'}`}
               >
                 <span className={`inline-block h-4 w-4 transform rounded-full bg-white shadow transition-transform ${showRPE ? 'translate-x-6' : 'translate-x-1'}`} />
               </button>

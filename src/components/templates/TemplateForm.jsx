@@ -116,7 +116,7 @@ export function TemplateForm({ initial, onSave, onCancel }) {
             placeholder="e.g. Push Day"
             value={name}
             onChange={e => { setName(e.target.value); setErrors(p => ({ ...p, name: undefined })) }}
-            className={`w-full rounded-xl border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 ${
+            className={`w-full rounded-xl border px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#7ba4c4]/40 bg-white dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 ${
               errors.name ? 'border-red-400 bg-red-50' : 'border-gray-200 dark:border-gray-600'
             }`}
           />
@@ -149,15 +149,15 @@ export function TemplateForm({ initial, onSave, onCancel }) {
 
                 // Superset group
                 return (
-                  <div key={group.supersetId} className="border-l-4 border-indigo-400 rounded-r-2xl bg-indigo-50/50 dark:bg-indigo-900/20 pl-3 pr-3 pt-3 pb-3">
+                  <div key={group.supersetId} className="border-l-4 border-indigo-400 rounded-r-2xl bg-[rgba(123,164,196,0.08)]/50 dark:bg-indigo-900/20 pl-3 pr-3 pt-3 pb-3">
                     <div className="flex items-center gap-2 mb-3">
                       <div className="flex gap-0.5 items-center">
-                        <div className="h-3.5 w-1 bg-indigo-500 rounded-full" />
-                        <div className="h-3.5 w-1 bg-indigo-500 rounded-full" />
+                        <div className="h-3.5 w-1 bg-[#7ba4c4] rounded-full" />
+                        <div className="h-3.5 w-1 bg-[#7ba4c4] rounded-full" />
                       </div>
-                      <span className="text-xs font-bold text-indigo-600 uppercase tracking-widest">Superset</span>
-                      <span className="text-indigo-300 text-xs">·</span>
-                      <span className="text-xs text-indigo-400">{group.items.length} exercises</span>
+                      <span className="text-xs font-bold text-[#5a7a96] uppercase tracking-widest">Superset</span>
+                      <span className="text-[#b3cfe1] text-xs">·</span>
+                      <span className="text-xs text-[#7ba4c4]">{group.items.length} exercises</span>
                     </div>
 
                     <div className="flex flex-col gap-2">
@@ -173,7 +173,7 @@ export function TemplateForm({ initial, onSave, onCancel }) {
                       <button
                         type="button"
                         onClick={() => openPicker(group.supersetId)}
-                        className="flex-1 py-1.5 text-xs font-semibold text-indigo-600 bg-white border border-indigo-200 rounded-lg hover:bg-indigo-50 transition-colors"
+                        className="flex-1 py-1.5 text-xs font-semibold text-[#5a7a96] bg-white border border-[rgba(123,164,196,0.3)] rounded-lg hover:bg-[rgba(123,164,196,0.08)] transition-colors"
                       >
                         + Browse library
                       </button>
@@ -198,7 +198,7 @@ export function TemplateForm({ initial, onSave, onCancel }) {
             <button
               type="button"
               onClick={() => openPicker(null)}
-              className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-indigo-600 text-white rounded-xl text-sm font-semibold hover:bg-indigo-700 transition-colors"
+              className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-[#7ba4c4] text-white rounded-xl text-sm font-semibold hover:bg-[#6b8fae] transition-colors"
             >
               <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                 <path d="M4 6h16M4 10h16M4 14h10" />
@@ -215,7 +215,7 @@ export function TemplateForm({ initial, onSave, onCancel }) {
             <button
               type="button"
               onClick={addSuperset}
-              className="px-3 py-2.5 border-2 border-dashed border-indigo-300 rounded-xl text-sm text-indigo-600 hover:border-indigo-400 hover:bg-indigo-50 transition-colors font-medium whitespace-nowrap"
+              className="px-3 py-2.5 border-2 border-dashed border-[#b3cfe1] rounded-xl text-sm text-[#5a7a96] hover:border-indigo-400 hover:bg-[rgba(123,164,196,0.08)] transition-colors font-medium whitespace-nowrap"
             >
               ⚡ Superset
             </button>

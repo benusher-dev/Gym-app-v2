@@ -92,7 +92,7 @@ export function PlanResult({
   return (
     <div className="mt-12">
       {/* ── Targets ── */}
-      <div className="rounded-2xl overflow-hidden bg-steel-600 text-white">
+      <div className="rounded-2xl overflow-hidden bg-gradient-to-r from-[#7ba4c4] to-[#6b8fae] text-white">
         <div className="px-5 py-6">
           <p className="text-[10px] font-bold uppercase tracking-[0.16em] text-white/55">
             Your Daily Target
