@@ -754,7 +754,17 @@ function ExerciseEditSheet({ ex, exIdx, logExercises, onSave, onClose }) {
 }
 
 // ── Settings sheet ────────────────────────────────────────────────────────────
-function SettingsSheet({ autoRest, showRPE, onToggleAutoRest, onToggleRPE, weekNum, onSetWeek, onClose }) {
+function SettingsSheet({ autoRest, showRPE, onToggleAutoRest, onToggleRPE, weekNum, onSetWeek, onResetWeek, onClose }) {
+  // Confirm inline rather than in a Modal — this sheet is already a fixed
+  // overlay, and stacking a second one over it just to ask a yes/no is worse
+  // than asking in place.
+  const [confirmReset, setConfirmReset] = useState(false)
+
+  function handleReset() {
+    onResetWeek()
+    setConfirmReset(false)
+  }
+
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center" onClick={onClose}>
       <div className="absolute inset-0 bg-black/40" />
@@ -788,6 +798,52 @@ function SettingsSheet({ autoRest, showRPE, onToggleAutoRest, onToggleRPE, weekN
                   >+</button>
                 </div>
               </div>
+            )}
+
+            {/* Reset the block. Prominent once week 8 is done, quiet before it,
+                and absent at week 1 where there is nothing to reset. */}
+            {weekNum != null && weekNum > 1 && (
+              confirmReset ? (
+                <div className="rounded-xl bg-[rgba(123,164,196,0.08)] px-4 py-3">
+                  <p className="text-sm text-gray-700 dark:text-gray-300">
+                    Reset this programme back to week 1?
+                  </p>
+                  <div className="flex gap-2 mt-3">
+                    <button
+                      onClick={() => setConfirmReset(false)}
+                      className="flex-1 py-2 rounded-lg border border-gray-200 dark:border-gray-600 text-sm font-medium text-gray-700 dark:text-gray-300"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      onClick={handleReset}
+                      className="flex-1 py-2 rounded-lg bg-[#7ba4c4] text-white text-sm font-semibold hover:bg-[#6b8fae] transition-colors"
+                    >
+                      Reset
+                    </button>
+                  </div>
+                </div>
+              ) : weekNum >= 8 ? (
+                <div className="rounded-xl bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-800 px-4 py-3">
+                  <p className="text-sm font-semibold text-amber-900 dark:text-amber-300">🏁 Block complete</p>
+                  <p className="text-xs text-amber-800/80 dark:text-amber-400/80 mt-0.5 leading-relaxed">
+                    All 8 weeks done. Reset to run the block again from week 1.
+                  </p>
+                  <button
+                    onClick={() => setConfirmReset(true)}
+                    className="mt-3 w-full py-2.5 rounded-lg bg-[#7ba4c4] text-white text-sm font-semibold hover:bg-[#6b8fae] transition-colors"
+                  >
+                    Start week 1 again
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={() => setConfirmReset(true)}
+                  className="self-start text-xs font-semibold text-[#5a7a96] dark:text-amber-400 underline underline-offset-2 hover:text-[#7ba4c4]"
+                >
+                  Reset to week 1
+                </button>
+              )
             )}
             <div className="flex items-center justify-between gap-4">
               <div className="flex-1">
@@ -869,7 +925,7 @@ function SessionNavBadge({ templateSessions, refIdx, weekNum, onNav }) {
 // ── Main component ─────────────────────────────────────────────────────────────
 export function LogWorkout() {
   const { templates, sessions, logTemplateId, setLogTemplateId, addSession, setActivePage, updateTemplate, setWorkoutStep } = useApp()
-  const { getWeek, setWeek, incrementWeek } = useWeekProgress()
+  const { getWeek, setWeek, incrementWeek, resetWeek } = useWeekProgress()
   const [step, setStep_] = useState(1)
   function setStep(s) { setStep_(s); setWorkoutStep(s) }
   const [selectedTemplate, setSelectedTemplate] = useState(null)
@@ -1529,6 +1585,7 @@ export function LogWorkout() {
           onToggleRPE={() => setShowRPE(v => !v)}
           weekNum={getWeek(selectedTemplate?.id)}
           onSetWeek={w => setWeek(selectedTemplate?.id, w)}
+          onResetWeek={() => resetWeek(selectedTemplate?.id)}
           onClose={() => setShowSettings(false)}
         />
       )}

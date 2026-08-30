@@ -18,5 +18,11 @@ export function useWeekProgress() {
     setProgress(prev => ({ ...prev, [templateId]: Math.min(max, (prev[templateId] ?? 1) + 1) }))
   }
 
-  return { getWeek, setWeek, incrementWeek }
+  /** Back to week 1 to run the block again. Only this template's counter moves. */
+  function resetWeek(templateId) {
+    if (!templateId) return
+    setProgress(prev => ({ ...prev, [templateId]: 1 }))
+  }
+
+  return { getWeek, setWeek, incrementWeek, resetWeek }
 }
