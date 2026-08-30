@@ -4,7 +4,7 @@
 
 @layer base {
   body {
-    @apply bg-gray-50 text-gray-900 dark:bg-gray-950 dark:text-gray-100;
+    @apply bg-[#f7f9fb] text-gray-900 dark:bg-gray-950 dark:text-gray-100;
     -webkit-tap-highlight-color: transparent;
   }
 
@@ -61,4 +61,25 @@
   .safe-bottom {
     bottom: env(safe-area-inset-bottom);
   }
+}
+
+/* iOS zooms the whole page when you focus an input whose text is under 16px,
+   which is what was blowing up the edit sheet and cropping it off-screen.
+   There is no way to keep smaller text and avoid it, so every form control is
+   pinned to 16px. !important because Tailwind's text-sm would otherwise win. */
+input,
+select,
+textarea {
+  font-size: 16px !important;
+}
+
+/* The shell is exactly one viewport tall with its own scroll regions inside,
+   so the document itself must never scroll. Without this, rubber-banding drags
+   the layout and leaves a strip of body background below the fixed nav. */
+html,
+body,
+#root {
+  height: 100%;
+  overflow: hidden;
+  overscroll-behavior: none;
 }

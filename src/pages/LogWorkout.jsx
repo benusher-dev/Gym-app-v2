@@ -1510,7 +1510,7 @@ export function LogWorkout() {
           </div>
         </div>
         <div className="flex-shrink-0 bg-gradient-to-r from-[#7ba4c4] to-[#6b8fae] dark:from-amber-600 dark:to-orange-700 border-t border-white/10">
-          <div className="px-4 py-2.5 max-w-lg mx-auto">
+          <div className="px-4 py-1.5 max-w-lg mx-auto">
             <div className="flex items-center justify-between gap-1">
               <SessionNavBadge
                 templateSessions={templateSessions}

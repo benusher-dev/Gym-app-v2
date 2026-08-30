@@ -12,7 +12,10 @@ function Pages() {
   const { activePage } = useApp()
 
   return (
-    <main className="flex flex-col h-dvh pb-[calc(4rem+env(safe-area-inset-bottom))] bg-[#f7f9fb] dark:bg-gray-900">
+    <main
+      className="flex flex-col h-dvh pb-[calc(4rem+env(safe-area-inset-bottom))] bg-[#f7f9fb] dark:bg-gray-900"
+      style={{ paddingTop: 'env(safe-area-inset-top)' }}
+    >
       <div className="flex-1 overflow-hidden flex flex-col">
         {activePage === 'dashboard'   && <Dashboard />}
         {activePage === 'workouts'    && <Workouts />}
