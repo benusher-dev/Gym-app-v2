@@ -1,6 +1,8 @@
 import { useState, useMemo } from 'react'
+import { useLocalStorage } from '../../hooks/useLocalStorage'
 
 const PLATE_SIZES = [25, 20, 15, 10, 5, 2.5, 1.25]
+const BAR_PRESETS = [20, 15]
 const PLATE_COLORS = {
   25:   { bg: '#ef4444', text: '#fff' },
   20:   { bg: '#3b82f6', text: '#fff' },
@@ -41,9 +43,25 @@ function PlateDisc({ kg }) {
 export function PlateCalculator({ onClose, initialTab = 'plates' }) {
   const [activeTab, setActiveTab] = useState(initialTab)
 
-  // Plates tab
+  // Plates tab. The bar is remembered — a gym's odd bar is a fixture, not a
+  // one-off, so retyping it every session would be busywork.
   const [target, setTarget] = useState('')
-  const [barKg, setBarKg] = useState(20)
+  const [barKg, setBarKg] = useLocalStorage('gwt_bar_weight', 20)
+  const [customBar, setCustomBar] = useState(() => (BAR_PRESETS.includes(barKg) ? '' : String(barKg)))
+  const [customMode, setCustomMode] = useState(() => !BAR_PRESETS.includes(barKg))
+
+  // While the custom field is empty there is no bar to calculate against.
+  const barValue = customMode ? (parseFloat(customBar) > 0 ? parseFloat(customBar) : null) : barKg
+
+  function pickPreset(b) { setCustomMode(false); setBarKg(b) }
+  function pickCustom() {
+    setCustomMode(true)
+    if (parseFloat(customBar) > 0) setBarKg(parseFloat(customBar))
+  }
+  function changeCustom(v) {
+    setCustomBar(v)
+    if (parseFloat(v) > 0) setBarKg(parseFloat(v))
+  }
 
   // 1RM tab
   const [rmWeight, setRmWeight] = useState('')
@@ -52,9 +70,10 @@ export function PlateCalculator({ onClose, initialTab = 'plates' }) {
   const result = useMemo(() => {
     const t = parseFloat(target)
     if (!t || t <= 0) return null
-    if (t < barKg) return { error: `Target must be ≥ bar weight (${barKg} kg)` }
-    return calcPlates(t, barKg)
-  }, [target, barKg])
+    if (barValue == null) return { error: 'Enter your bar weight' }
+    if (t < barValue) return { error: `Target must be ≥ bar weight (${barValue} kg)` }
+    return calcPlates(t, barValue)
+  }, [target, barValue])
 
   const oneRM = useMemo(() => {
     const w = parseFloat(rmWeight)
@@ -107,30 +126,46 @@ export function PlateCalculator({ onClose, initialTab = 'plates' }) {
           {/* ── Plates tab ── */}
           {activeTab === 'plates' && (
             <>
-              <div className="flex gap-3 mb-4">
-                <div className="flex-1">
-                  <label className="text-xs font-medium text-gray-500 dark:text-gray-400 block mb-1">Target Weight (kg)</label>
-                  <input
-                    type="number" min="0" step="2.5" placeholder="100"
-                    value={target}
-                    onChange={e => setTarget(e.target.value)}
-                    className="w-full rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 dark:text-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#7ba4c4]/40"
-                    autoFocus
-                  />
-                </div>
-                <div>
-                  <label className="text-xs font-medium text-gray-500 dark:text-gray-400 block mb-1">Bar</label>
-                  <div className="flex rounded-xl border border-gray-200 dark:border-gray-600 overflow-hidden text-xs font-semibold">
-                    {[20, 15].map(b => (
+              <div className="mb-3">
+                <label className="text-xs font-medium text-gray-500 dark:text-gray-400 block mb-1">Target Weight (kg)</label>
+                <input
+                  type="number" min="0" step="2.5" placeholder="100"
+                  value={target}
+                  onChange={e => setTarget(e.target.value)}
+                  className="w-full rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 dark:text-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#7ba4c4]/40"
+                  autoFocus
+                />
+              </div>
+
+              <div className="mb-4">
+                <label className="text-xs font-medium text-gray-500 dark:text-gray-400 block mb-1">Bar</label>
+                <div className="flex gap-2">
+                  <div className="flex rounded-xl border border-gray-200 dark:border-gray-600 overflow-hidden text-xs font-semibold flex-shrink-0">
+                    {BAR_PRESETS.map(b => (
                       <button
                         key={b}
-                        onClick={() => setBarKg(b)}
-                        className={`px-3 py-2 transition-colors ${barKg === b ? 'bg-[#7ba4c4] text-white' : 'text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700'}`}
+                        onClick={() => pickPreset(b)}
+                        className={`px-3 py-2 transition-colors ${!customMode && barKg === b ? 'bg-[#7ba4c4] text-white' : 'text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700'}`}
                       >
                         {b}kg
                       </button>
                     ))}
+                    <button
+                      onClick={pickCustom}
+                      className={`px-3 py-2 transition-colors ${customMode ? 'bg-[#7ba4c4] text-white' : 'text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-700'}`}
+                    >
+                      Custom
+                    </button>
                   </div>
+                  {customMode && (
+                    <input
+                      type="number" min="0" step="0.5" placeholder="e.g. 7.5"
+                      value={customBar}
+                      onChange={e => changeCustom(e.target.value)}
+                      aria-label="Custom bar weight in kg"
+                      className="flex-1 min-w-0 rounded-xl border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 dark:text-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#7ba4c4]/40"
+                    />
+                  )}
                 </div>
               </div>
 
@@ -149,7 +184,7 @@ export function PlateCalculator({ onClose, initialTab = 'plates' }) {
                   </div>
 
                   {barPlates.length === 0 ? (
-                    <p className="text-center text-sm text-gray-500 dark:text-gray-400">Just the bar ({barKg} kg)</p>
+                    <p className="text-center text-sm text-gray-500 dark:text-gray-400">Just the bar ({barValue} kg)</p>
                   ) : (
                     <div>
                       <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide mb-2">Per side</p>
